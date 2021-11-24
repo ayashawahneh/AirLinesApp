@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AirLinesApp</string>
+    <string name="airlines">Airlines</string>
+    <string name="copyRight">© Reserved to @ Harri</string>
 </resources>
