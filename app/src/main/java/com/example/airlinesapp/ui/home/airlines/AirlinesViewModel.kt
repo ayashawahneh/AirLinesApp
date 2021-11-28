@@ -26,6 +26,8 @@ class AirlinesViewModel @Inject constructor(private val repository: Repository) 
     val airlinesLiveData: LiveData<List<AirlineWithFavoriteFlag>>
         get() = _airlinesLiveData
     val favoriteAirlinesList = MutableLiveData<MutableList<String>>()
+    val searchText = MutableLiveData<String>()
+    val searchedAirlinesList = MutableLiveData<List<AirlineWithFavoriteFlag>>()
 
     init {
         favoriteAirlinesList.value = repository.getFavoriteIdsFromDataStore()
@@ -40,6 +42,13 @@ class AirlinesViewModel @Inject constructor(private val repository: Repository) 
     fun updateAirlineIdsInDataStore() {
         favoriteAirlinesList.value?.let {
             repository.saveFavoriteIdsToDataStore(it)
+        }
+    }
+
+    // take the searchText --> filter the airlinesListLiveData --> put the result on new list ---> send it to the adapter
+    fun search() {
+        searchedAirlinesList.value = _airlinesLiveData.value?.filter {
+            it.airline.name.contains(searchText.value.toString(), true)
         }
     }
 
