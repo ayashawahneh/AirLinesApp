@@ -1,4 +1,4 @@
-package com.example.airlinesapp.ui
+package com.example.airlinesapp.ui.home.passengers
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
