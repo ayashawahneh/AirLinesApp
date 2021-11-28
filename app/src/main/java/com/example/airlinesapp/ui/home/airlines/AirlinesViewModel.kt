@@ -1,14 +1,10 @@
 package com.example.airlinesapp.ui.home.airlines
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import com.example.airlinesapp.R
 import com.example.airlinesapp.di.network.Repository
 import com.example.airlinesapp.models.AirlineWithFavoriteFlag
-import com.example.airlinesapp.util.Constants.CHECK_NETWORK_ERROR
-import com.example.airlinesapp.util.Constants.EMPTY_LIST
-import com.example.airlinesapp.util.Constants.LOADING
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,15 +15,23 @@ class AirlinesViewModel @Inject constructor(private val repository: Repository) 
     ViewModel() {
     var isLoading = MutableLiveData<Boolean>()
         private set
-    var networkState = MutableLiveData<String>()
-        private set
+    val isVisibleStateTextView = MutableLiveData<Boolean>()
+    var networkState = MutableLiveData<Int>()
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
-    private val _airlinesLiveData = MutableLiveData<List<AirlineWithFavoriteFlag>>()
-    val airlinesLiveData: LiveData<List<AirlineWithFavoriteFlag>>
-        get() = _airlinesLiveData
+    val airlinesLiveData = MutableLiveData<List<AirlineWithFavoriteFlag>>()
     val favoriteAirlinesList = MutableLiveData<MutableList<String>>()
     val searchText = MutableLiveData<String>()
-    val searchedAirlinesList = MutableLiveData<List<AirlineWithFavoriteFlag>>()
+    private var searchedAirlinesList = MutableLiveData<List<AirlineWithFavoriteFlag>>()
+    val mappedSearchedText = searchText.switchMap { query ->
+        if (!query.isNullOrEmpty()) {
+            searchedAirlinesList.value = airlinesLiveData.value?.filter {
+                it.airline.name.contains(searchText.value.toString(), true)
+            }
+            searchedAirlinesList
+        } else {
+            airlinesLiveData
+        }
+    }
 
     init {
         favoriteAirlinesList.value = repository.getFavoriteIdsFromDataStore()
@@ -45,32 +49,28 @@ class AirlinesViewModel @Inject constructor(private val repository: Repository) 
         }
     }
 
-    // take the searchText --> filter the airlinesListLiveData --> put the result on new list ---> send it to the adapter
-    fun search() {
-        searchedAirlinesList.value = _airlinesLiveData.value?.filter {
-            it.airline.name.contains(searchText.value.toString(), true)
-        }
-    }
-
     private fun getAirlinesList() {
-        networkState.value = LOADING
+        networkState.value = R.string.LOADING
         isLoading.value = true
+        isVisibleStateTextView.value = true
         compositeDisposable.add(
             repository.getAirlines()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
-                        _airlinesLiveData.value = it
+                        this.airlinesLiveData.value = it
                         isLoading.value = false
-
+                        isVisibleStateTextView.value = false
                         if (it.isEmpty()) {
-                            networkState.value = EMPTY_LIST
+                            networkState.value = R.string.EMPTY_LIST
+                            isVisibleStateTextView.value = true
                         }
                     },
                     {
                         Log.e("AirlinesViewModel", it.message.toString())
                         isLoading.value = false
-                        networkState.value = CHECK_NETWORK_ERROR
+                        isVisibleStateTextView.value = true
+                        networkState.value = R.string.CHECK_NETWORK_ERROR
                     }
                 )
         )
