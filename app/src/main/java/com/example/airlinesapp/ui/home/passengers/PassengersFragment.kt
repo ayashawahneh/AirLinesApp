@@ -17,7 +17,6 @@ import com.example.airlinesapp.di.daggerViewModels.ViewModelFactory
 import com.example.airlinesapp.models.Passenger
 import com.example.airlinesapp.ui.home.HomeActivity
 import com.example.airlinesapp.ui.home.passengers.editPassenger.EditPassengerActivity
-import com.example.airlinesapp.util.Constants.EMPTY_LIST
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.android.support.DaggerFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,12 +30,8 @@ class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
         ViewModelProvider(this, viewModelFactory)
             .get(PassengersViewModel::class.java)
     }
-
     private lateinit var passengersAdapter: PassengersRecyclerViewPagingAdapter
-    private var _binding: FragmentPassengersBinding? = null
-    val binding
-        get() = _binding!!
-
+    private lateinit var binding: FragmentPassengersBinding
     private val goToEditPassenger: (Passenger) -> Unit = {
         (activity as HomeActivity).launcher.launch(
             EditPassengerActivity.newIntentWithPassengerExtra(
@@ -62,15 +57,14 @@ class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentPassengersBinding.bind(view)
+        binding = FragmentPassengersBinding.bind(view)
         setHasOptionsMenu(true)
 
         setActionBar()
+        setAdapter()
         setupView()
-        networkStateObserving()
-        observingPassengersList()
-        observingPassengerDeleted()
-        searchTextObserving()
+        initViewModel()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -83,49 +77,22 @@ class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
     @SuppressLint("CheckResult")
     private fun configureSearchView(menu: Menu) {
         val searchView = menu.findItem(R.id.search_view)?.actionView as SearchView
-
-        /* ----------- we can use rxjava too ----------- */
-        /*  searchView.findViewById<EditText>(androidx.appcompat.R.id.search_src_text).textChanges()
-            .skipInitialValue()
-            .debounce(500, TimeUnit.MILLISECONDS)
-            .doOnNext {
-                if (it.trim().toString().length >= 3)
-                    passengersViewModel.searchText.postValue(it.toString())
-            }
-            .filter {
-                it.trim().toString().length >= 3
-            }
-
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(Schedulers.io())
-            .subscribe({
-
-            }, {
-            })   */
-
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText != null && newText.length > 2) {
+                if (!newText.isNullOrEmpty() && newText.length > 2) {
                     passengersViewModel.searchText.value = newText
 
                 } else {
                     if (!passengersViewModel.searchText.value.isNullOrEmpty())
                         passengersViewModel.searchText.value = ""
                 }
-
                 return true
             }
         })
-    }
-
-    private fun searchTextObserving() {
-        passengersViewModel.searchText.observe(viewLifecycleOwner) {
-            passengersViewModel.search()
-        }
     }
 
     private fun setActionBar() {
@@ -133,15 +100,21 @@ class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
         actionBar?.title = resources.getString(R.string.passengers)
     }
 
-    private fun setupView() {
-        binding.viewModel = passengersViewModel
-        binding.lifecycleOwner = viewLifecycleOwner
+    private fun setAdapter() {
         passengersAdapter =
             PassengersRecyclerViewPagingAdapter(goToEditPassenger, showDialogConfirmation)
         passengersAdapter.addLoadStateListener { loadState ->
-            if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && passengersAdapter.itemCount < 1)
-                passengersViewModel.networkState.value = EMPTY_LIST
+            if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && passengersAdapter.itemCount < 1){
+                passengersViewModel.networkState.value = R.string.EMPTY_LIST
+                passengersViewModel.isVisibleStateTextView.value = true
+            }
+
         }
+    }
+
+    private fun setupView() {
+        binding.viewModel = passengersViewModel
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = passengersAdapter.withLoadStateHeaderAndFooter(
@@ -151,36 +124,32 @@ class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
         }
     }
 
-    private fun networkStateObserving() {
-        passengersViewModel.networkState.observe(viewLifecycleOwner) {
-            Toast.makeText(this.requireContext(), it, Toast.LENGTH_SHORT)
-                .show()
-        }
-    }
+    private fun initViewModel() {
+        with(passengersViewModel) {
+            this.passengersList.observe(viewLifecycleOwner) {
+                passengersAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+            }
 
-    private fun observingPassengersList() {
-        passengersViewModel.passengersList.observe(viewLifecycleOwner) {
-            passengersAdapter.submitData(viewLifecycleOwner.lifecycle, it)
-        }
-    }
+            this.isDeleted.observe(viewLifecycleOwner) {
+                if (it) {
+                    passengersAdapter.refresh()
+                    Toast.makeText(
+                        requireContext(),
+                        resources.getString(R.string.deleted_successfully),
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                } else
+                    Toast.makeText(
+                        requireContext(),
+                        resources.getString(R.string.error_deleting),
+                        Toast.LENGTH_SHORT
+                    ).show()
+            }
 
-    private fun observingPassengerDeleted() {
-        passengersViewModel.isDeleted.observe(viewLifecycleOwner) {
-            if (it) {
-                passengersAdapter.refresh()
-                Toast.makeText(
-                    this.requireContext(),
-                    resources.getString(R.string.deleted_successfully),
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
-            } else
-                Toast.makeText(
-                    this.requireContext(),
-                    resources.getString(R.string.error_deleting),
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
+            this.searchText.observe(viewLifecycleOwner) {
+                this.search()
+            }
         }
     }
 }
