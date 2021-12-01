@@ -1,7 +1,8 @@
-package com.example.airlinesapp
+package com.example.airlinesapp.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.airlinesapp.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
