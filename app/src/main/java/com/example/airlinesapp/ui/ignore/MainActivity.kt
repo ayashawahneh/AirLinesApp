@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
                     airlinesRecyclerViewAdapter.notifyDataSetChanged()
 
                 } else {
-                    Toast.makeText(this@MainActivity, "Error getting Data", Toast.LENGTH_SHORT)
+                    Toast.makeText(this@MainActivity, "Error getting Passenger", Toast.LENGTH_SHORT)
                         .show()
                 }
             })

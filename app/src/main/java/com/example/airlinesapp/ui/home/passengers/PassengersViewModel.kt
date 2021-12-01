@@ -19,8 +19,13 @@ class PassengersViewModel @Inject constructor(private val repository: Repository
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     val passengersList = MutableLiveData<PagingData<Passenger>>()
     val isDeleted = MutableLiveData<Boolean>()
+    val searchText = MutableLiveData("")
 
     init {
+        getPassengers()
+    }
+
+    fun search() {
         getPassengers()
     }
 
@@ -45,7 +50,7 @@ class PassengersViewModel @Inject constructor(private val repository: Repository
     private fun getPassengers() {
         isLoading.value = true
         compositeDisposable.add(
-            repository.getPassengers()
+            repository.getPassengers(searchText.value!!)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {

@@ -66,6 +66,9 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.0'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.12'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    // RxBindig
+    implementation "com.jakewharton.rxbinding2:rxbinding:2.0.0"
+    implementation "com.jakewharton.rxbinding2:rxbinding-kotlin:2.0.0"
 
 
     //retrofit
@@ -95,5 +98,5 @@ dependencies {
 
     //Preferences DataStore
     implementation("androidx.datastore:datastore-preferences-rxjava2:1.0.0")
-   // implementation "androidx.datastore:datastore-preferences-rxjava3:1.0.0"
-    }
+    // implementation "androidx.datastore:datastore-preferences-rxjava3:1.0.0"
+}

@@ -7,9 +7,7 @@ import com.example.airlinesapp.ui.home.passengers.addPassenger.AddPassengerActiv
 import com.example.airlinesapp.ui.home.passengers.editPassenger.EditPassengerActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
 @Module
 abstract class BuildersModule {
 
