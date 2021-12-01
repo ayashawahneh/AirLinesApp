@@ -13,7 +13,7 @@
         android:theme="@style/Theme.AirLinesApp">
         <activity
             android:name=".ui.HomeActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".ui.SplashActivity"
             android:exported="true"

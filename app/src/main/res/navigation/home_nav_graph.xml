@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/airlinesFragment"
-        android:name="com.example.airlinesapp.AirlinesFragment"
+        android:name="com.example.airlinesapp.ui.AirlinesFragment"
         android:label="fragment_airlines"
         tools:layout="@layout/fragment_airlines" />
     <fragment
         android:id="@+id/passengersFragment"
-        android:name="com.example.airlinesapp.PassengersFragment"
+        android:name="com.example.airlinesapp.ui.PassengersFragment"
         android:label="fragment_passengers"
         tools:layout="@layout/fragment_passengers" />
 </navigation>
