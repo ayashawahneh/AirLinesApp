@@ -3,8 +3,8 @@ package com.example.airlinesapp.ui.home.passengers
 import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.PagingData
+import com.example.airlinesapp.R
 import com.example.airlinesapp.models.Passenger
-import com.example.airlinesapp.util.Constants.CHECK_NETWORK_ERROR
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 import com.example.airlinesapp.di.network.Repository
@@ -15,7 +15,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class PassengersViewModel @Inject constructor(private val repository: Repository) :
     ViewModel() {
     var isLoading = MutableLiveData<Boolean>()
-    var networkState = MutableLiveData<String>()
+    var networkState = MutableLiveData<Int>()
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     val passengersList = MutableLiveData<PagingData<Passenger>>()
     val isDeleted = MutableLiveData<Boolean>()
@@ -58,7 +58,7 @@ class PassengersViewModel @Inject constructor(private val repository: Repository
                         isLoading.value = false
                     },
                     {
-                        networkState.value = CHECK_NETWORK_ERROR
+                        networkState.value = R.string.CHECK_NETWORK_ERROR
                         isLoading.value = false
                     }
                 )

@@ -32,10 +32,5 @@ class AirlinesRecyclerViewAdapter :
         else airlinesList?.size!!
     }
 
-//    @SuppressLint("NotifyDataSetChanged")
-//    fun updatePostList(list:List<AirLine>){
-//        this.airlinesList = list
-//        notifyDataSetChanged()
-//    }
     class AirlineViewHolder(val view: SingleAirlineViewBinding) : RecyclerView.ViewHolder(view.root)
 }
