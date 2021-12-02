@@ -30,6 +30,5 @@ class PassengersDataSource(private val apiService: ApiService) :
             prevKey = null,
             nextKey = if (position == data.totalPages) null else position + 1
         )
-
     }
 }
