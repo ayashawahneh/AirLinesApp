@@ -1,11 +1,14 @@
 package com.example.airlinesapp.models
 
+import com.google.gson.annotations.SerializedName
 import java.math.BigInteger
 
 data class Passenger(
-    val _id: String,
+    @SerializedName("_id")
+    val id: String,
     val name: String,
     val trips: BigInteger,
     val airline: List<AirLine>,
-    val __v: String
+    @SerializedName("__v")
+    val v: String
 )

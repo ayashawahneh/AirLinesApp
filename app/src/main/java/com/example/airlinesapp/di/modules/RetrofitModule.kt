@@ -1,10 +1,9 @@
 package com.example.airlinesapp.di.modules
 
 import com.example.airlinesapp.di.network.ApiService
-import com.example.airlinesapp.util.BASE_URL
+import com.example.airlinesapp.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -23,6 +22,7 @@ class RetrofitModule {
         logger.level = HttpLoggingInterceptor.Level.BODY
 
         val client = OkHttpClient.Builder()
+            .connectTimeout(60, TimeUnit.SECONDS)
             .addInterceptor(logger)
             .build()
 

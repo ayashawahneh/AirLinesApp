@@ -2,6 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+
         <variable
             name="airline"
             type="com.example.airlinesapp.models.AirLine" />
@@ -24,8 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:contentDescription="@string/airline_image"
-                android:loadImage="@{airline.logo}"
-                 />
+                android:loadImage="@{airline.logo}" />
 
             <LinearLayout
                 android:layout_width="match_parent"

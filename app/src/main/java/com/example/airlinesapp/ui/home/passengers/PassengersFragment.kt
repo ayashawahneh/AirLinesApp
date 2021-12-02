@@ -1,21 +1,14 @@
 package com.example.airlinesapp.ui.home.passengers
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.airlinesapp.R
 import com.example.airlinesapp.databinding.FragmentPassengersBinding
+import com.example.airlinesapp.di.NetworkState
 import com.example.airlinesapp.di.daggerViewModels.ViewModelFactory
-import com.example.airlinesapp.di.network.ApiService
-import com.example.airlinesapp.ui.home.airlines.AirlinesRecyclerViewAdapter
 import dagger.android.support.DaggerFragment
-import io.reactivex.disposables.CompositeDisposable
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
@@ -36,12 +29,16 @@ class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
         _binding = FragmentPassengersBinding.bind(view)
         setupView()
 
+        passengersViewModel.progressBarStatus?.observe(viewLifecycleOwner) {
+            if (it == NetworkState.LOADING)
+                binding.progressBar.visibility = View.VISIBLE
+            if (it == NetworkState.LOADED) binding.progressBar.visibility = View.GONE
+        }
+
         passengersViewModel.passengersList.observe(viewLifecycleOwner) {
-            it.map {
-                Log.d("log", it.name.toString())
-            }
             passengersAdapter.submitData(viewLifecycleOwner.lifecycle, it)
         }
+
 
     }
 

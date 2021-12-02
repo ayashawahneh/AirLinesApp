@@ -26,15 +26,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{passenger.name}"
-                    android:textAppearance="?attr/textAppearanceHeadline6" />
+                    android:textAppearance="?attr/textAppearanceHeadline5" />
 
                 <TextView
                     android:id="@+id/trips"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@{passenger.trips.toString()}"
-                    android:textAppearance="?attr/textAppearanceBody2"
+                    android:text="@{`Trips: ` +passenger.trips.toString()}"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
                     android:textColor="?android:attr/textColorSecondary" />
 
             </LinearLayout>

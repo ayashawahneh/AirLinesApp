@@ -1,6 +1,5 @@
 package com.example.airlinesapp.ui.home.passengers
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -27,7 +26,7 @@ class PassengersRecyclerViewPagingAdapter :
         return PassengersViewHolder(view)
     }
 
-    class PassengersViewHolder(val view: SinglePassengerViewBinding) :
+    class PassengersViewHolder(private val view: SinglePassengerViewBinding) :
         RecyclerView.ViewHolder(view.root) {
         fun bind(item: Passenger) = with(view) {
             passenger = item
@@ -36,7 +35,7 @@ class PassengersRecyclerViewPagingAdapter :
 
     object PassengersComparator : DiffUtil.ItemCallback<Passenger>() {
         override fun areItemsTheSame(oldItem: Passenger, newItem: Passenger) =
-            oldItem._id == newItem._id
+            oldItem.id == newItem.id
 
         override fun areContentsTheSame(oldItem: Passenger, newItem: Passenger) =
             oldItem == newItem

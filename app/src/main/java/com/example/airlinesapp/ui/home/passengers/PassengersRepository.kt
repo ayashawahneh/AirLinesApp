@@ -6,7 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.rxjava2.flowable
 import com.example.airlinesapp.di.network.ApiService
 import com.example.airlinesapp.models.Passenger
-import com.example.airlinesapp.util.PASSENGERS_PER_PAGE
+import com.example.airlinesapp.util.Constants.PASSENGERS_PER_PAGE
 import io.reactivex.Flowable
 import javax.inject.Inject
 
