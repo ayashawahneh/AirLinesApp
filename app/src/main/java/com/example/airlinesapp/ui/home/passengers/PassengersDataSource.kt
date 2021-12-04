@@ -1,17 +1,20 @@
 package com.example.airlinesapp.ui.home.passengers
 
 
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingState
 import androidx.paging.rxjava2.RxPagingSource
 import com.example.airlinesapp.di.network.ApiService
 import com.example.airlinesapp.models.Passenger
 import com.example.airlinesapp.models.PassengersResponse
+import com.example.airlinesapp.util.Constants
 import com.example.airlinesapp.util.Constants.FIRST_PAGE
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
 class PassengersDataSource(private val apiService: ApiService) :
     RxPagingSource<Int, Passenger>() {
+    val progressLiveStatus: MutableLiveData<String> = MutableLiveData(Constants.LOADING)
     override fun getRefreshKey(state: PagingState<Int, Passenger>): Int? {
         return state.anchorPosition
     }
@@ -30,5 +33,6 @@ class PassengersDataSource(private val apiService: ApiService) :
             prevKey = null,
             nextKey = if (position == data.totalPages) null else position + 1
         )
+
     }
 }
