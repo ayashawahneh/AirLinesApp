@@ -11,10 +11,6 @@ class AirlinesRecyclerViewAdapter :
 
     private var airlinesList: List<AirLine>? = null
 
-    fun setUpdatedData(airlineListData: List<AirLine>) {
-        this.airlinesList = airlineListData
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AirlineViewHolder {
         val view = SingleAirlineViewBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
@@ -30,6 +26,10 @@ class AirlinesRecyclerViewAdapter :
     override fun getItemCount(): Int {
         return if (airlinesList == null) 0
         else airlinesList?.size!!
+    }
+
+    fun setUpdatedData(airlineListData: List<AirLine>) {
+        this.airlinesList = airlineListData
     }
 
     class AirlineViewHolder(val view: SingleAirlineViewBinding) : RecyclerView.ViewHolder(view.root)

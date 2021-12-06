@@ -7,4 +7,12 @@
     <string name="passengers">Passengers</string>
     <string name="airline_image">airlineImage</string>
     <string name="add_new_item">Add New Item</string>
+    <string name="airline_name">Airline Name</string>
+    <string name="country">Country</string>
+    <string name="slogan">Slogan</string>
+    <string name="head_quarter">Head quarter</string>
+    <string name="website">WebSite</string>
+    <string name="established">Established</string>
+    <string name="submit">Submit</string>
+    <string name="save">Save</string>
 </resources>

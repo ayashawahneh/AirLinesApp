@@ -1,5 +1,10 @@
 package com.example.airlinesapp.util
 
+import android.icu.util.Calendar
+import android.os.Build
+import androidx.annotation.RequiresApi
+
+
 object Constants {
 
     const val SPLASHING_TIME = 2000
@@ -8,4 +13,8 @@ object Constants {
     const val LOADING = "Loading"
     const val LOADED = "Loaded"
     const val CHECK_NETWORK_ERROR = "Check your network connection."
+
+    const val FIRST_AIRLINE_YEAR = 1919
+    const val CURRENT_YEAR =2021
+
 }
