@@ -4,6 +4,7 @@ import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.airlinesapp.R
 import com.example.airlinesapp.di.network.Repository
 import com.example.airlinesapp.models.AirLine
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -37,37 +38,37 @@ class AddAirlineViewModel @Inject constructor(private val repository: Repository
                 )
     }
 
-    fun validateSlogan(): String? {
+    fun validateSlogan(): Int? {
         return if (slogan.value == null || slogan.value == "") {
             null
         } else {
             if (slogan.value.toString().length < 3) {
-                "Too short"
+                R.string.too_short
             } else {
                 null
             }
         }
     }
 
-    fun validateWebsite(): String? {
+    fun validateWebsite(): Int? {
         return if (website.value == null || website.value == "") {
             null
         } else {
             if (!(Patterns.WEB_URL.matcher(website.value!!).matches())) {
-                "Invalid Website"
+                R.string.invalid_website
             } else {
                 null
             }
         }
     }
 
-    fun validateRequiredFields(str: String?): String? {
+    fun validateRequiredFields(str: String?): Int? {
         return when {
             str == null || str == "" -> {
-                "Required"
+                R.string.required
             }
             str.length < 3 -> {
-                "Too short"
+                R.string.too_short
             }
             else -> null
         }

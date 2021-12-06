@@ -1,7 +1,7 @@
 package com.example.airlinesapp.ui.ignore
 
 //
-//class AirlinesViewModel(private val airlinesRepository: AirlinesRepository, application: Application) : AndroidViewModel(application){
+//class AirlinesViewModel(private val airlinesRepository: API, application: Application) : AndroidViewModel(application){
 //    private var liveDataList: MutableLiveData<List<AirLine>>
 //    init {
 //        (application as MyApplication).getRetroComponent().inject(this)
