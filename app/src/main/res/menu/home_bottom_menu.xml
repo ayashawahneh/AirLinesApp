@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/airlinesFragment"
+        android:icon="@drawable/ic_airlines"
+        android:title="@string/airlines" />
+    <item
+        android:id="@+id/passengersFragment"
+        android:icon="@drawable/ic_passengers"
+        android:title="@string/passengers" />
+</menu>
