@@ -1,6 +1,8 @@
 package com.example.airlinesapp.di.network
 
 import com.example.airlinesapp.models.AirLine
+import com.example.airlinesapp.models.Passenger
+import com.example.airlinesapp.models.PassengerPost
 import com.example.airlinesapp.models.PassengersResponse
 import com.example.airlinesapp.util.Constants.PASSENGERS_PER_PAGE
 import io.reactivex.Single
@@ -21,5 +23,8 @@ interface ApiService {
     ): Single<PassengersResponse>
 
     @POST("airlines")
-    fun addNewAirline(@Body airlineData: AirLine) :Single<AirLine>
+    fun addNewAirline(@Body airlineData: AirLine): Single<AirLine>
+
+    @POST("passenger")
+    fun addNewPassenger(@Body passengerData: PassengerPost): Single<Passenger>
 }

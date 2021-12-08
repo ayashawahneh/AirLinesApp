@@ -1,10 +1,5 @@
 package com.example.airlinesapp.util
 
-import android.icu.util.Calendar
-import android.os.Build
-import androidx.annotation.RequiresApi
-
-
 object Constants {
 
     const val SPLASHING_TIME = 2000

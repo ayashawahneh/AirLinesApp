@@ -87,7 +87,8 @@ class AddAirlineViewModel @Inject constructor(private val apiRepository: ApiRepo
         }
     }
 
-    fun addAirline() {
+    fun addAirline(): Boolean {
+        var isSent = false
         val airlineData = AirLine(
             country = country.value.toString(),
             established = established.value.toString(),
@@ -95,8 +96,6 @@ class AddAirlineViewModel @Inject constructor(private val apiRepository: ApiRepo
             name = name.value.toString(),
             headQuaters = headQuarter.value.toString(),
             website = website.value.toString(),
-            id = null,
-            logo = null
         )
 
         compositeDisposable
@@ -106,11 +105,14 @@ class AddAirlineViewModel @Inject constructor(private val apiRepository: ApiRepo
                     .subscribe(
                         {
                             Log.d("addNewAir", it.name)
+                            isSent = true
                         },
                         {
                             Log.d("addNewAir", it.message.toString())
+                            isSent = false
                         }
                     )
             )
+        return isSent
     }
 }

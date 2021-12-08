@@ -3,6 +3,7 @@ package com.example.airlinesapp.ui.home.airlines.addAirline
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.airlinesapp.R
@@ -42,8 +43,13 @@ class AddAirlineActivity : DaggerAppCompatActivity() {
 
     private fun buttonClickEvent() {
         binding.submitButton.setOnClickListener {
-            viewModel.addAirline()
-            startActivity(newIntent(this, viewModel.name.value.toString()))
+            if (viewModel.addAirline()) {
+                startActivity(newIntent(this, viewModel.name.value.toString()))
+            } else {
+                Toast.makeText(this, "Error sending data, try again later!", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
         }
     }
 
