@@ -38,5 +38,16 @@
             app:layout_constraintTop_toTopOf="parent"
             android:visibility="@{model.isLoading ? View.VISIBLE : View.GONE}"/>
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floating_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:contentDescription="@string/add_new_item"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_add"
+            app:tint="@android:color/white"
+            android:layout_gravity="right|bottom"
+            tools:ignore="RtlHardcoded" />
     </FrameLayout>
 </layout>
