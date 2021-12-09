@@ -1,7 +1,7 @@
 package com.example.airlinesapp.di.modules
 
 import com.example.airlinesapp.di.network.ApiService
-import com.example.airlinesapp.util.BASE_URL
+import com.example.airlinesapp.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor

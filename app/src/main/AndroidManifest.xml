@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AirLinesApp">
         <activity
-            android:name=".ui.HomeActivity"
+            android:name=".ui.home.HomeActivity"
             android:exported="false" />
         <activity
             android:name=".ui.SplashActivity"

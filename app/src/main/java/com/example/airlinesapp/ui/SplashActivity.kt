@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import com.example.airlinesapp.R
+import com.example.airlinesapp.ui.home.HomeActivity
 import com.example.airlinesapp.util.Constants.SPLASHING_TIME
 
 @SuppressLint("CustomSplashScreen")
