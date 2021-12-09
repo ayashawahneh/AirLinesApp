@@ -16,11 +16,11 @@ import com.example.airlinesapp.models.AirlineWithFavoriteFlag
 import com.example.airlinesapp.models.Passenger
 import com.example.airlinesapp.ui.home.HomeActivity
 import com.example.airlinesapp.ui.home.airlines.AirlinesViewModel
-import com.example.airlinesapp.util.Constants.PASSENGER_RESULT_CODE
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_add_passenger.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
+
 @ExperimentalCoroutinesApi
 class EditPassengerActivity : DaggerAppCompatActivity() {
     private lateinit var binding: ActivityEditPassengerBinding
@@ -28,6 +28,7 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
     val passenger by lazy {
         intent.getParcelableExtra<Passenger>(EXTRA_EDIT_PASSENGER)
     }
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val airlinesViewModel by lazy {
@@ -41,20 +42,12 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_passenger)
-        binding.model = editPassengerViewModel
-        binding.airlineViewModel = airlinesViewModel
-        binding.lifecycleOwner = this
 
+        setupView()
         setActivityActionBar()
-        fillFieldsWithPassengerData()
-        networkStateObserving()
+        initEditPassengerViewModel()
         fillAirlineDropdownList()
-        passengerNameObserving()
-        airlineDropdownListObserving()
-        buttonEnableObserving()
         buttonClickEvent()
-        isPassengerDataSentObserving()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -62,18 +55,68 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
         return true
     }
 
-    private fun setActivityActionBar() {
-        val actionBar = supportActionBar
-        actionBar!!.title = resources.getString(R.string.edit_passenger)
-        actionBar.setDisplayHomeAsUpEnabled(true)
+    private fun setupView() {
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_passenger)
+        with(binding) {
+            this.model = editPassengerViewModel
+            this.airlineViewModel = airlinesViewModel
+            this.lifecycleOwner = this@EditPassengerActivity
+        }
     }
 
-    private fun fillFieldsWithPassengerData() {
-        editPassengerViewModel.passengerId.value = passenger?.id
-        editPassengerViewModel.passengerName.value = passenger?.name
-        editPassengerViewModel.trips.value = passenger?.trips.toString()
-        editPassengerViewModel.airlineName.value = passenger?.airline?.get(0)?.toString()
-        editPassengerViewModel.airlineObject.value = passenger?.airline?.get(0)
+    private fun setActivityActionBar() {
+        with(supportActionBar) {
+            this!!.title = resources.getString(R.string.edit_passenger)
+            this.setDisplayHomeAsUpEnabled(true)
+        }
+    }
+
+    private fun initEditPassengerViewModel() {
+        with(editPassengerViewModel) {
+            /*-------fill data on fields-------------*/
+            this.passengerId.value = passenger?.id
+            this.passengerName.value = passenger?.name
+            this.trips.value = passenger?.trips.toString()
+            this.airlineName.value = passenger?.airline?.get(0)?.toString()
+            this.airlineObject.value = passenger?.airline?.get(0)
+
+            /*-----------observing--------------------*/
+            this.airlineName.observe(this@EditPassengerActivity) {
+                binding.airlineNameContainer.helperText =
+                    this.validateAirlineName()
+                this.setEnableSubmitButton()
+            }
+
+            this.passengerName.observe(this@EditPassengerActivity) {
+                val validationResult = this.validatePassengerName()
+                if (validationResult != null) {
+                    binding.passengerNameContainer.helperText =
+                        resources.getString(validationResult)
+                } else {
+                    binding.passengerNameContainer.helperText = null
+                }
+                this.setEnableSubmitButton()
+            }
+
+            this.isSent.observe(this@EditPassengerActivity) {
+                if (it) {
+                    setResult(
+                        HomeActivity.PASSENGER_RESULT_CODE,
+                        HomeActivity.newIntentWithStringExtra(
+                            this@EditPassengerActivity,
+                            "${this.passengerName.value.toString()} updated successfully"
+                        )
+                    )
+                    finish()
+                } else {
+                    Toast.makeText(
+                        this@EditPassengerActivity,
+                        resources.getString(R.string.error_sending_data),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
     }
 
     private fun fillAirlineDropdownList() {
@@ -89,55 +132,9 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
             })
     }
 
-    private fun networkStateObserving() {
-        airlinesViewModel.networkState.observe(this) {
-            Toast.makeText(this, it, Toast.LENGTH_SHORT)
-                .show()
-        }
-    }
-
-    private fun buttonEnableObserving() {
-        editPassengerViewModel.enableSubmitButton.observe(this) {
-            binding.submitButton.isEnabled = it
-        }
-    }
-
-    private fun airlineDropdownListObserving() {
-        editPassengerViewModel.airlineName.observe(this) {
-            binding.airlineNameContainer.helperText = editPassengerViewModel.validateAirlineName()
-            editPassengerViewModel.setEnableSubmitButton()
-        }
-    }
-
-    private fun passengerNameObserving() {
-        editPassengerViewModel.passengerName.observe(this) {
-            binding.passengerNameContainer.helperText =
-                editPassengerViewModel.validatePassengerName()
-            editPassengerViewModel.setEnableSubmitButton()
-        }
-    }
-
     private fun buttonClickEvent() {
         binding.submitButton.setOnClickListener {
             editPassengerViewModel.editPassenger()
-        }
-    }
-
-    private fun isPassengerDataSentObserving() {
-        editPassengerViewModel.isSent.observe(this) {
-            if (it) {
-                setResult(
-                    PASSENGER_RESULT_CODE,
-                    HomeActivity.newIntentWithStringExtra(
-                        this,
-                        "${editPassengerViewModel.passengerName.value.toString()} updated successfully"
-                    )
-                )
-                finish()
-            } else {
-                Toast.makeText(this, resources.getString(R.string.error_sending_data), Toast.LENGTH_SHORT)
-                    .show()
-            }
         }
     }
 
