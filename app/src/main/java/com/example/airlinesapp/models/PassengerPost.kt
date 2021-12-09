@@ -1,6 +1,7 @@
 package com.example.airlinesapp.models
 
 import com.google.gson.annotations.SerializedName
+import java.math.BigDecimal
 
 data class PassengerPost(
     @SerializedName("name")
@@ -8,5 +9,5 @@ data class PassengerPost(
     @SerializedName("trips")
     val trips: Int,
     @SerializedName("airline")
-    val airline: Int
+    val airline: BigDecimal
 )

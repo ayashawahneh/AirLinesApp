@@ -5,6 +5,7 @@ import com.example.airlinesapp.ui.home.airlines.AirlinesViewModel
 import com.example.airlinesapp.ui.home.airlines.addAirline.AddAirlineViewModel
 import com.example.airlinesapp.ui.home.passengers.PassengersViewModel
 import com.example.airlinesapp.ui.home.passengers.addPassenger.AddPassengerViewModel
+import com.example.airlinesapp.ui.home.passengers.editPassenger.EditPassengerViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -31,4 +32,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(AddPassengerViewModel::class)
     internal abstract fun bindAddPassengerViewModel(viewModel: AddPassengerViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(EditPassengerViewModel::class)
+    internal abstract fun bindEditPassengerViewModel(viewModel: EditPassengerViewModel): ViewModel
 }

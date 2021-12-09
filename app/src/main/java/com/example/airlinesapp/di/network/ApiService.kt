@@ -6,10 +6,7 @@ import com.example.airlinesapp.models.PassengerPost
 import com.example.airlinesapp.models.PassengersResponse
 import com.example.airlinesapp.util.Constants.PASSENGERS_PER_PAGE
 import io.reactivex.Single
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface ApiService {
 
@@ -27,4 +24,10 @@ interface ApiService {
 
     @POST("passenger")
     fun addNewPassenger(@Body passengerData: PassengerPost): Single<Passenger>
+
+    @PUT("passenger/{id}")
+    fun editPassenger(
+        @Path("id") passengerId: String,
+        @Body passengerData: PassengerPost
+    ): Single<Passenger>
 }

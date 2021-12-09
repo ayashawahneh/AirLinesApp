@@ -1,4 +1,4 @@
-package com.example.airlinesapp.ui.home.passengers.addPassenger
+package com.example.airlinesapp.ui.home.passengers.editPassenger
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -10,9 +10,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
-class AddPassengerViewModel @Inject constructor(private val apiRepository: ApiRepository) :
+class EditPassengerViewModel @Inject constructor(private val apiRepository: ApiRepository) :
     ViewModel() {
-
+    val passengerId = MutableLiveData<String>()
     val passengerName = MutableLiveData<String>()
     val trips = MutableLiveData<String>()
     val airlineName = MutableLiveData<String>()
@@ -52,7 +52,7 @@ class AddPassengerViewModel @Inject constructor(private val apiRepository: ApiRe
                 )
     }
 
-    fun addPassenger(): Boolean {
+    fun editPassenger(): Boolean {
         var isSent = false
         if (trips.value == null || trips.value == "")
             trips.value = "0"
@@ -62,14 +62,14 @@ class AddPassengerViewModel @Inject constructor(private val apiRepository: ApiRe
             trips = trips.value!!.toInt(),
             airline = airlineObject.value!!.id!!.toBigDecimal()
         )
-
+        Log.d("editNewPas", "${passengerId.value} ${passengerName.value}  ${trips.value}  ${airlineObject.value?.name}")
         compositeDisposable
             .add(
-                apiRepository.addNewPassenger(passengerData)
+                apiRepository.editPassenger(passengerId.value!!, passengerData)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {
-                            Log.d("addNewPas", it.name)
+                            Log.d("editNewPas", it.name)
                             isSent = true
                         },
                         {

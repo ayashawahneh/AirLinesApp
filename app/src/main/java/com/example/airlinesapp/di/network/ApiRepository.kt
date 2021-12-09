@@ -6,8 +6,9 @@ import androidx.paging.PagingData
 import androidx.paging.rxjava2.flowable
 import com.example.airlinesapp.models.AirLine
 import com.example.airlinesapp.models.Passenger
+import com.example.airlinesapp.models.PassengerPost
 import com.example.airlinesapp.ui.home.passengers.PassengersDataSource
-import com.example.airlinesapp.util.Constants
+import com.example.airlinesapp.util.Constants.PASSENGERS_PER_PAGE
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -24,13 +25,25 @@ class ApiRepository @Inject constructor(private val apiService: ApiService) {
     fun getPassengers(): Flowable<PagingData<Passenger>> {
         return Pager(
             config = PagingConfig(
-                pageSize = Constants.PASSENGERS_PER_PAGE,
+                pageSize = PASSENGERS_PER_PAGE,
                 enablePlaceholders = true,
                 maxSize = 30,
                 prefetchDistance = 5,
-                initialLoadSize = 40),
+                initialLoadSize = 40
+            ),
             pagingSourceFactory = { PassengersDataSource(apiService) }
         ).flowable
     }
 
+    fun addNewAirline(airlineData: AirLine): Single<AirLine> {
+        return apiService.addNewAirline(airlineData).subscribeOn(Schedulers.io())
+    }
+
+    fun addNewPassenger(passengerData: PassengerPost): Single<Passenger> {
+        return apiService.addNewPassenger(passengerData).subscribeOn(Schedulers.io())
+    }
+
+    fun editPassenger(passengerId: String, passengerData: PassengerPost): Single<Passenger> {
+        return apiService.editPassenger(passengerId, passengerData).subscribeOn(Schedulers.io())
+    }
 }
