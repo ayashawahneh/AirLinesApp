@@ -13,6 +13,6 @@ data class Passenger(
     val name: String,
     val trips: Int,
     val airline: List<AirLine>,
-    @SerializedName("__v")
+   @SerializedName("__v")
     val v: Int
 ) : Parcelable
