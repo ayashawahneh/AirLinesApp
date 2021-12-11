@@ -16,4 +16,6 @@
     <string name="save">Save</string>
     <string name="passenger_name">Passenger Name</string>
     <string name="trips">Trips Number(by default zero)</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>

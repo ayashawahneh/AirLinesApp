@@ -2,24 +2,60 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+
         <variable
             name="passenger"
             type="com.example.airlinesapp.models.Passenger" />
     </data>
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card"
+    <com.chauthai.swipereveallayout.SwipeRevealLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp">
+        app:dragEdge="right"
+        app:mode="same_level">
 
+        <!--Swipe Layout-->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/editButton"
+                style="?android:attr/button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/secondary"
+                android:text="@string/edit" />
+
+            <Button
+                android:id="@+id/deleteButton"
+                style="?android:attr/button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/design_default_color_error"
+                android:text="@string/delete" />
+
+        </LinearLayout>
+
+
+        <!--Main Layout-->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="16dp">
-
 
                 <TextView
                     android:id="@+id/name"
@@ -38,5 +74,7 @@
                     android:textColor="?android:attr/textColorSecondary" />
 
             </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+        </com.google.android.material.card.MaterialCardView>
+    </com.chauthai.swipereveallayout.SwipeRevealLayout>
+
 </layout>

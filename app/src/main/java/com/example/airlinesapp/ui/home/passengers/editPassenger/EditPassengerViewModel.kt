@@ -62,14 +62,12 @@ class EditPassengerViewModel @Inject constructor(private val apiRepository: ApiR
             trips = trips.value!!.toInt(),
             airline = airlineObject.value!!.id!!.toBigDecimal()
         )
-        Log.d("editNewPas", "${passengerId.value} ${passengerName.value}  ${trips.value}  ${airlineObject.value?.name}")
         compositeDisposable
             .add(
                 apiRepository.editPassenger(passengerId.value!!, passengerData)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {
-                            Log.d("editNewPas", it.name)
                             isSent = true
                         },
                         {

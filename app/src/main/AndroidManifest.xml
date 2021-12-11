@@ -13,12 +13,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AirLinesApp">
         <activity
-            android:name=".ui.home.HomeActivity"
+            android:name=".ui.home.passengers.editPassenger.EditPassengerActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.home.passengers.addPassenger.AddPassengerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.home.airlines.addAirline.AddAirlineActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.home.HomeActivity"
+            android:exported="false"/>
         <activity
             android:name=".ui.SplashActivity"
             android:exported="true"
-            android:theme="@style/Theme.AirLinesApp.Splash">
+            android:theme="@style/Theme.AirLinesApp.Splash" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,5 +35,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

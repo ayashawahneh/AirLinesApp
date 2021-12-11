@@ -66,7 +66,7 @@ class AddPassengerActivity : DaggerAppCompatActivity() {
                         .show()
                 }
             })
-        airlinesViewModel.makeApiCall()
+        airlinesViewModel.getAirlinesList()
     }
 
     private fun buttonEnableObserving() {

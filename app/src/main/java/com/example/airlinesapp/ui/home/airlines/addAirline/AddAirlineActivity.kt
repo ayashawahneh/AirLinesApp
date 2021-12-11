@@ -49,7 +49,6 @@ class AddAirlineActivity : DaggerAppCompatActivity() {
                 Toast.makeText(this, "Error sending data, try again later!", Toast.LENGTH_SHORT)
                     .show()
             }
-
         }
     }
 

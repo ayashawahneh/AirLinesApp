@@ -23,10 +23,9 @@ import javax.inject.Inject
 class EditPassengerActivity : DaggerAppCompatActivity() {
     private lateinit var binding: ActivityEditPassengerBinding
     private lateinit var arrayAdapter: ArrayAdapter<AirLine>
-    private lateinit var passenger: Passenger
-//    val passenger by lazy {
-//        intent.getParcelableExtra<Passenger>(EXTRA_Edit_Passenger)
-//    }
+    val passenger by lazy {
+        intent.getParcelableExtra<Passenger>(EXTRA_Edit_Passenger)
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -45,19 +44,6 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_passenger)
         binding.model = editPassengerViewModel
 
-
-        val airline = AirLine(
-            "Dubai",
-            "1985",
-            "Garhoud, Dubai, United Arab Emirates",
-            "4",
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Emirates_logo.svg/150px-Emirates_logo.svg.png",
-            "Emirates"
-        )
-        passenger = Passenger("5ef4a412aab3841847750ce8", "John Doe", 250, listOf(airline), 0)
-
-//https://api.instantwebtools.net/v1/passenger/5ef4a412aab3841847750ce8
-
         fillFieldsWithPassengerData()
         fillAirlineDropdownList()
         passengerNameObserving()
@@ -67,12 +53,11 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
     }
 
     private fun fillFieldsWithPassengerData() {
-        editPassengerViewModel.passengerId.value = passenger.id
-        editPassengerViewModel.passengerName.value = passenger.name
-        editPassengerViewModel.trips.value = passenger.trips.toString()
-        editPassengerViewModel.airlineName.value = passenger.airline[0].toString()
-        editPassengerViewModel.airlineObject.value = passenger.airline[0]
-
+        editPassengerViewModel.passengerId.value = passenger?.id
+        editPassengerViewModel.passengerName.value = passenger?.name
+        editPassengerViewModel.trips.value = passenger?.trips.toString()
+        editPassengerViewModel.airlineName.value = passenger?.airline?.get(0)?.toString()
+        editPassengerViewModel.airlineObject.value = passenger?.airline?.get(0)
     }
 
     private fun fillAirlineDropdownList() {
@@ -92,7 +77,7 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
                         .show()
                 }
             })
-        airlinesViewModel.makeApiCall()
+        airlinesViewModel.getAirlinesList()
     }
 
     private fun buttonEnableObserving() {

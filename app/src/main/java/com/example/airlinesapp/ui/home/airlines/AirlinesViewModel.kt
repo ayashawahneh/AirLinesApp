@@ -10,12 +10,14 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
+
 class AirlinesViewModel @Inject constructor(private val apiRepository: ApiRepository) :
     ViewModel() {
+   // var isLoading = MutableLiveData(true)
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
-    private val _airlinesLiveData = MutableLiveData<List<AirLine>>()
-    val airlinesLiveData: LiveData<List<AirLine>>
-        get() = _airlinesLiveData
+    private val _liveDataList = MutableLiveData<List<AirLine>>()
+    val liveDataList: LiveData<List<AirLine>>
+        get() = _liveDataList
 
     init {
         getAirlinesList()
@@ -26,19 +28,20 @@ class AirlinesViewModel @Inject constructor(private val apiRepository: ApiReposi
         compositeDisposable.clear()
     }
 
-    private fun getAirlinesList() {
+    fun getAirlinesList() {
         compositeDisposable.add(
             apiRepository.getAirlines()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ response -> onResponse(response) }, { t -> onFailure(t) })
+                .subscribe(
+                    {
+                        _liveDataList.postValue(it)
+                       // isLoading.postValue(false)
+                    },
+                    {
+                        Log.e("AirlinesViewModel", it.message.toString())
+                      //  isLoading.postValue(false)
+                    }
+                )
         )
-    }
-
-    private fun onFailure(t: Throwable) {
-        t.message?.let { Log.e("AirlinesViewModel", it) }
-    }
-
-    private fun onResponse(response: List<AirLine>) {
-        _airlinesLiveData.postValue(response)
     }
 }
