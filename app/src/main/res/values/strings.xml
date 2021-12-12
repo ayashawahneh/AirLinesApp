@@ -18,4 +18,8 @@
     <string name="trips">Trips Number(by default zero)</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="delete_dialog_title">Delete Passenger</string>
+    <string name="delete_dialog_message">Are you sure you want to delete this passenger?</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
 </resources>

@@ -30,4 +30,9 @@ interface ApiService {
         @Path("id") passengerId: String,
         @Body passengerData: PassengerPost
     ): Single<Passenger>
+
+    @DELETE("passenger/{id}")
+    fun deletePassenger(
+        @Path("id") passengerId: String
+    ): Single<String>
 }

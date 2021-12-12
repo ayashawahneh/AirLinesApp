@@ -46,4 +46,8 @@ class ApiRepository @Inject constructor(private val apiService: ApiService) {
     fun editPassenger(passengerId: String, passengerData: PassengerPost): Single<Passenger> {
         return apiService.editPassenger(passengerId, passengerData).subscribeOn(Schedulers.io())
     }
+
+    fun deletePassenger(passengerId: String): Single<String> {
+        return apiService.deletePassenger(passengerId).subscribeOn(Schedulers.io())
+    }
 }
