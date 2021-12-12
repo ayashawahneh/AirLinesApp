@@ -13,4 +13,16 @@ class ApiRepository @Inject constructor(private val apiService: ApiService) {
         return apiService.getAirlines().subscribeOn(Schedulers.io())
     }
 
+    fun getPassengers(): Flowable<PagingData<Passenger>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = Constants.PASSENGERS_PER_PAGE,
+                enablePlaceholders = true,
+                maxSize = 30,
+                prefetchDistance = 5,
+                initialLoadSize = 40),
+            pagingSourceFactory = { PassengersDataSource(apiService) }
+        ).flowable
+    }
+
 }

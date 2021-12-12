@@ -11,9 +11,10 @@ import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import com.example.airlinesapp.di.network.ApiRepository
 
 
-class PassengersViewModel @Inject constructor(private val repository: PassengersRepository) :
+class PassengersViewModel @Inject constructor(private val repository: ApiRepository) :
     ViewModel() {
 
     private var networkState: MutableLiveData<String> = MutableLiveData(LOADING)
