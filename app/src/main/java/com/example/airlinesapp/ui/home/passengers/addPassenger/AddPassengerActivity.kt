@@ -49,7 +49,7 @@ class AddPassengerActivity : DaggerAppCompatActivity() {
     }
 
     private fun fillAirlineDropdownList() {
-        airlinesViewModel.liveDataList.observe(this,
+        airlinesViewModel.airlinesLiveData.observe(this,
             { airlinesList ->
                 if (airlinesList != null) {
                     arrayAdapter = ArrayAdapter(this, R.layout.dropdown_item, airlinesList)

@@ -44,6 +44,7 @@ class PassengersRecyclerViewPagingAdapter(context: Context) :
         RecyclerView.ViewHolder(view.root) {
         private val EXTRA_Edit_Passenger =
             EditPassengerActivity::class.java.name + "_Edit_Passenger_EXTRA"
+
         fun bind(item: Passenger) = with(view) {
             passenger = item
 

@@ -1,11 +1,9 @@
 package com.example.airlinesapp.ui.home.airlines
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.airlinesapp.R
@@ -23,41 +21,31 @@ class AirlinesFragment : DaggerFragment(R.layout.fragment_airlines) {
         ViewModelProvider(this, viewModelFactory)
             .get(AirlinesViewModel::class.java)
     }
-    private lateinit var airlinesRecyclerViewAdapter: AirlinesRecyclerViewAdapter
+    private lateinit var airlinesListAdapter: AirlinesRecyclerViewListAdapter
     private var _binding: FragmentAirlinesBinding? = null
     val binding get() = _binding!!
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentAirlinesBinding.bind(view)
-        initRecyclerView()
-        initViewModel()
+
+        setupView()
+        observingAirlinesList()
         setupAddFloatingButton()
-
     }
 
-    private fun initRecyclerView() {
-        binding.recyclerView.layoutManager = LinearLayoutManager(this.context)
-        airlinesRecyclerViewAdapter = AirlinesRecyclerViewAdapter()
-        binding.recyclerView.adapter = airlinesRecyclerViewAdapter
+    private fun setupView() {
+        airlinesListAdapter = AirlinesRecyclerViewListAdapter()
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = airlinesListAdapter
+        }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private fun initViewModel() {
-        airlinesViewModel.liveDataList.observe(viewLifecycleOwner,
-            { t ->
-                if (t != null) {
-                    airlinesRecyclerViewAdapter.setUpdatedData(t)
-                    binding.progressBar.visibility = View.GONE
-                    //  airlinesViewModel.isLoading.value = false
-                    airlinesRecyclerViewAdapter.notifyDataSetChanged()
-
-                } else {
-                    Toast.makeText(this.context, "Error getting Airlines", Toast.LENGTH_SHORT)
-                        .show()
-                }
-            })
-        airlinesViewModel.getAirlinesList()
+    private fun observingAirlinesList() {
+        airlinesViewModel.airlinesLiveData.observe(viewLifecycleOwner) {
+            airlinesListAdapter.submitList(it)
+        }
     }
 
     private fun setupAddFloatingButton() {
@@ -70,6 +58,5 @@ class AirlinesFragment : DaggerFragment(R.layout.fragment_airlines) {
 
         fun newIntent(context: Context) =
             Intent(context, AddAirlineActivity::class.java)
-
     }
 }

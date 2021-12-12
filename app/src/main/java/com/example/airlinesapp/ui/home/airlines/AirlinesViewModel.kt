@@ -1,6 +1,8 @@
 package com.example.airlinesapp.ui.home.airlines
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,9 +17,9 @@ class AirlinesViewModel @Inject constructor(private val apiRepository: ApiReposi
     ViewModel() {
    // var isLoading = MutableLiveData(true)
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
-    private val _liveDataList = MutableLiveData<List<AirLine>>()
-    val liveDataList: LiveData<List<AirLine>>
-        get() = _liveDataList
+    private val _airlinesLiveData = MutableLiveData<List<AirLine>>()
+    val airlinesLiveData: LiveData<List<AirLine>>
+        get() = _airlinesLiveData
 
     init {
         getAirlinesList()
@@ -34,7 +36,7 @@ class AirlinesViewModel @Inject constructor(private val apiRepository: ApiReposi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
-                        _liveDataList.postValue(it)
+                        _airlinesLiveData.postValue(it)
                        // isLoading.postValue(false)
                     },
                     {
