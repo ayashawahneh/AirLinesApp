@@ -123,6 +123,7 @@ class AirlinesFragment : DaggerFragment(R.layout.fragment_airlines) {
     private fun observingAirlinesList() {
         airlinesViewModel.airlinesLiveData.observe(viewLifecycleOwner) {
             airlinesListAdapter.submitList(it)
+            binding.progressBar.visibility = View.GONE
         }
     }
 
