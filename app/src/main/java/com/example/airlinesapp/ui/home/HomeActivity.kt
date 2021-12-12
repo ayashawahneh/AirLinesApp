@@ -1,4 +1,4 @@
-package com.example.airlinesapp.ui
+package com.example.airlinesapp.ui.home
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
