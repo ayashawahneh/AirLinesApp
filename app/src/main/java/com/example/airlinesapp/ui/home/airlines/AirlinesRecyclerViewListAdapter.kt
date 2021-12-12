@@ -25,7 +25,7 @@ class AirlinesRecyclerViewListAdapter(
         RecyclerView.ViewHolder(view.root) {
 
         fun onBind(item: AirlineWithFavoriteFlag) {
-            with(view) {  
+            with(view) {
                 favoriteAirline = item
 
                 with(iconFavorite) {
