@@ -1,9 +1,7 @@
 package com.example.airlinesapp.ui.home.airlines
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.airlinesapp.R
@@ -21,44 +19,30 @@ class AirlinesFragment : DaggerFragment(R.layout.fragment_airlines) {
             .get(AirlinesViewModel::class.java)
     }
 
-    private lateinit var airlinesRecyclerViewAdapter: AirlinesRecyclerViewAdapter
+    private lateinit var airlinesListAdapter: AirlinesRecyclerViewListAdapter
     private var _binding: FragmentAirlinesBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentAirlinesBinding.bind(view)
-        initRecyclerView()
-        initViewModel()
 
+        setupView()
+        observingAirlinesList()
     }
 
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
+    private fun setupView() {
+        airlinesListAdapter = AirlinesRecyclerViewListAdapter()
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = airlinesListAdapter
+        }
     }
 
-    private fun initRecyclerView() {
-        binding.recyclerView.layoutManager = LinearLayoutManager(this.context)
-        airlinesRecyclerViewAdapter = AirlinesRecyclerViewAdapter()
-        binding.recyclerView.adapter = airlinesRecyclerViewAdapter
+    private fun observingAirlinesList() {
+        airlinesViewModel.airlinesLiveData.observe(viewLifecycleOwner) {
+            airlinesListAdapter.submitList(it)
+            binding.progressBar.visibility = View.GONE
+        }
     }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun initViewModel() {
-        airlinesViewModel.liveDataList.observe(viewLifecycleOwner,
-            { t ->
-                if (t != null) {
-                    airlinesRecyclerViewAdapter.setUpdatedData(t)
-                    binding.progressBar.visibility = View.GONE
-                    airlinesRecyclerViewAdapter.notifyDataSetChanged()
-
-                } else {
-                    Toast.makeText(this.context, "Error getting Data", Toast.LENGTH_SHORT)
-                        .show()
-                }
-            })
-        airlinesViewModel.makeApiCall()
-    }
-
 }

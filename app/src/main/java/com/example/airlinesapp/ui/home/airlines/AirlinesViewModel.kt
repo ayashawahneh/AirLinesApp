@@ -4,50 +4,41 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.airlinesapp.di.network.ApiRepository
 import com.example.airlinesapp.models.AirLine
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
-
-class AirlinesViewModel @Inject constructor(private val airlinesRepository: AirlinesRepository) :
+class AirlinesViewModel @Inject constructor(private val apiRepository: ApiRepository) :
     ViewModel() {
-    //val  airlinesRecyclerViewAdapter: AirlinesRecyclerViewAdapter = AirlinesRecyclerViewAdapter()
-    // private val loadingVisibility: MutableLiveData<Int> = MutableLiveData()
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
-    private val _liveDataList = MutableLiveData<List<AirLine>>()
-    val liveDataList: LiveData<List<AirLine>>
-        get() = _liveDataList
+    private val _airlinesLiveData = MutableLiveData<List<AirLine>>()
+    val airlinesLiveData: LiveData<List<AirLine>>
+        get() = _airlinesLiveData
+
+    init {
+        getAirlinesList()
+    }
 
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.clear()
     }
 
-    fun makeApiCall() {
+    private fun getAirlinesList() {
         compositeDisposable.add(
-            airlinesRepository.getAirlines()
+            apiRepository.getAirlines()
                 .observeOn(AndroidSchedulers.mainThread())
-//                .doOnSubscribe { onRetrievePostListStart() }
-//                .doAfterTerminate { onRetrievePostListFinish() }
                 .subscribe({ response -> onResponse(response) }, { t -> onFailure(t) })
         )
     }
 
-    //    private fun onRetrievePostListStart(){
-//        loadingVisibility.value = View.VISIBLE
-//    }
-//
-//    private fun onRetrievePostListFinish(){
-//        loadingVisibility.value = View.GONE
-//    }
     private fun onFailure(t: Throwable) {
         t.message?.let { Log.e("AirlinesViewModel", it) }
     }
 
     private fun onResponse(response: List<AirLine>) {
-        _liveDataList.postValue(response)
-        //airlinesRecyclerViewAdapter.updatePostList(response)
+        _airlinesLiveData.postValue(response)
     }
-
 }

@@ -2,7 +2,6 @@ package com.example.airlinesapp.di
 
 import android.app.Application
 import com.example.airlinesapp.context.MyApplication
-import com.example.airlinesapp.di.daggerViewModels.ViewModelFactory
 import com.example.airlinesapp.di.daggerViewModels.ViewModelFactoryModule
 import com.example.airlinesapp.di.daggerViewModels.ViewModelModule
 import com.example.airlinesapp.di.modules.AppModule
