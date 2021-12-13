@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 class AirlinesViewModel @Inject constructor(private val apiRepository: ApiRepository) :
     ViewModel() {
-   // var isLoading = MutableLiveData(true)
+    var isLoading = MutableLiveData<Boolean>()
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val _airlinesLiveData = MutableLiveData<List<AirLine>>()
     val airlinesLiveData: LiveData<List<AirLine>>
@@ -29,17 +29,18 @@ class AirlinesViewModel @Inject constructor(private val apiRepository: ApiReposi
     }
 
     fun getAirlinesList() {
+        isLoading.value = true
         compositeDisposable.add(
             apiRepository.getAirlines()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
-                        _airlinesLiveData.postValue(it)
-                       // isLoading.postValue(false)
+                        _airlinesLiveData.value = it
+                        isLoading.value = false
                     },
                     {
                         Log.e("AirlinesViewModel", it.message.toString())
-                      //  isLoading.postValue(false)
+                        isLoading.value = false
                     }
                 )
         )

@@ -1,10 +1,9 @@
 package com.example.airlinesapp.ui.home.passengers
 
-import android.content.Context
-import android.content.Intent
-import android.content.res.Resources
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.airlinesapp.R
@@ -13,7 +12,6 @@ import com.example.airlinesapp.di.daggerViewModels.ViewModelFactory
 import com.example.airlinesapp.models.Passenger
 import com.example.airlinesapp.ui.home.passengers.addPassenger.AddPassengerActivity
 import com.example.airlinesapp.ui.home.passengers.editPassenger.EditPassengerActivity
-import com.example.airlinesapp.util.Constants.LOADING
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
@@ -32,36 +30,45 @@ class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
     val binding
         get() = _binding!!
 
+    private val goToEditPassenger: (Passenger) -> Unit = {
+        startActivity(
+            EditPassengerActivity.newIntentWithPassengerExtra(
+                this.requireContext(),
+                it
+            )
+        )
+    }
+    private val showDialogConfirmation: (Passenger) -> Unit = {
+        MaterialAlertDialogBuilder(this.requireContext())
+            .setTitle(resources.getString(R.string.delete_dialog_title))
+            .setMessage(resources.getString(R.string.delete_dialog_message))
+            .setNegativeButton(resources.getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setPositiveButton(
+                resources.getString(R.string.confirm)
+            ) { _, _ ->
+                passengersViewModel.deletePassenger(it.id)
+                passengersAdapter.deletedItem.value = it
+            }
+            .show()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentPassengersBinding.bind(view)
 
         setupView()
         observingPassengersList()
+        observingPassengerDeleted()
         setupAddFloatingButton()
-
-    }
-
-    private fun setupAddFloatingButton() {
-        binding.floatingActionButton.setOnClickListener {
-            startActivity(newIntentToAddPassengerActivity(this.requireContext()))
-        }
-    }
-
-    private fun observingPassengersList() {
-        passengersViewModel.passengersList.observe(viewLifecycleOwner) {
-            passengersAdapter.submitData(viewLifecycleOwner.lifecycle, it)
-        }
-
-        passengersViewModel.progressBarStatus?.observe(viewLifecycleOwner) {
-            if (it == LOADING)
-                binding.progressBar.visibility = View.VISIBLE
-            else binding.progressBar.visibility = View.GONE
-        }
     }
 
     private fun setupView() {
-        passengersAdapter = PassengersRecyclerViewPagingAdapter(showDialogConfirmation)
+        binding.viewModel = passengersViewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+        passengersAdapter =
+            PassengersRecyclerViewPagingAdapter(goToEditPassenger, showDialogConfirmation)
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
@@ -72,27 +79,38 @@ class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
         }
     }
 
-  private val showDialogConfirmation : (Passenger)-> Unit = {
-        MaterialAlertDialogBuilder(this.requireContext())
-            .setTitle(resources.getString(R.string.delete_dialog_title))
-            .setMessage(resources.getString(R.string.delete_dialog_message))
-            .setNegativeButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss();
-            }
-            .setPositiveButton(
-                resources.getString(R.string.confirm)
-            ) { dialog, which ->
-                // apply delete
-
-
-                // return to pass fragment with response message
-            }
-            .show()
+    private fun observingPassengersList() {
+        passengersViewModel.passengersList.observe(viewLifecycleOwner) {
+            passengersAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+        }
     }
 
-    companion object {
+    @SuppressLint("NotifyDataSetChanged")
+    private fun observingPassengerDeleted() {
+        passengersViewModel.isDeleted.observe(viewLifecycleOwner) {
 
-        fun newIntentToAddPassengerActivity(context: Context) =
-            Intent(context, AddPassengerActivity::class.java)
+            if (it) {
+                passengersAdapter.deleteItem()
+                passengersAdapter.notifyDataSetChanged()
+                Toast.makeText(
+                    this.requireContext(),
+                    "Passenger data deleted successfully.",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+            } else
+                Toast.makeText(
+                    this.requireContext(),
+                    "Error deleting, try again later!",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+        }
+    }
+
+    private fun setupAddFloatingButton() {
+        binding.floatingActionButton.setOnClickListener {
+            startActivity(AddPassengerActivity.newIntent(this.requireContext()))
+        }
     }
 }

@@ -105,7 +105,7 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
         binding.submitButton.setOnClickListener {
             if (editPassengerViewModel.editPassenger()) {
                 startActivity(
-                    newIntent(
+                    HomeActivity.newIntentWithStringExtra(
                         this,
                         editPassengerViewModel.passengerName.value.toString()
                     )
@@ -122,8 +122,8 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
         private val EXTRA_Edit_Passenger =
             EditPassengerActivity::class.java.name + "_Edit_Passenger_EXTRA"
 
-        fun newIntent(context: Context, passengerName: String) =
-            Intent(context, HomeActivity::class.java)
-                .putExtra(EXTRA_Edit_Passenger, passengerName)
+        fun newIntentWithPassengerExtra(context: Context, passenger: Passenger) =
+            Intent(context, EditPassengerActivity::class.java)
+                .putExtra(EXTRA_Edit_Passenger, passenger)
     }
 }

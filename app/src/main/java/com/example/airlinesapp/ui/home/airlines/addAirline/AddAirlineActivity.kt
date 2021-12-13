@@ -44,7 +44,7 @@ class AddAirlineActivity : DaggerAppCompatActivity() {
     private fun buttonClickEvent() {
         binding.submitButton.setOnClickListener {
             if (viewModel.addAirline()) {
-                startActivity(newIntent(this, viewModel.name.value.toString()))
+                startActivity(HomeActivity.newIntentWithStringExtra(this, viewModel.name.value.toString()))
             } else {
                 Toast.makeText(this, "Error sending data, try again later!", Toast.LENGTH_SHORT)
                     .show()
@@ -102,10 +102,8 @@ class AddAirlineActivity : DaggerAppCompatActivity() {
 
     companion object {
 
-        private val EXTRA_Add_Airline = AddAirlineActivity::class.java.name + "_Add_Airline_EXTRA"
-        fun newIntent(context: Context, airlineName: String) =
-            Intent(context, HomeActivity::class.java)
-                .putExtra(EXTRA_Add_Airline, airlineName)
+        fun newIntent(context: Context) =
+            Intent(context, AddAirlineActivity::class.java)
     }
 }
 

@@ -1,7 +1,5 @@
 package com.example.airlinesapp.ui.home.airlines
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
@@ -35,6 +33,8 @@ class AirlinesFragment : DaggerFragment(R.layout.fragment_airlines) {
     }
 
     private fun setupView() {
+        binding.model = airlinesViewModel
+        binding.lifecycleOwner = viewLifecycleOwner
         airlinesListAdapter = AirlinesRecyclerViewListAdapter()
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
@@ -45,19 +45,12 @@ class AirlinesFragment : DaggerFragment(R.layout.fragment_airlines) {
     private fun observingAirlinesList() {
         airlinesViewModel.airlinesLiveData.observe(viewLifecycleOwner) {
             airlinesListAdapter.submitList(it)
-            binding.progressBar.visibility = View.GONE
         }
     }
 
     private fun setupAddFloatingButton() {
         binding.floatingActionButton.setOnClickListener {
-            startActivity(newIntent(this.requireContext()))
+            startActivity(AddAirlineActivity.newIntent(this.requireContext()))
         }
-    }
-
-    companion object {
-
-        fun newIntent(context: Context) =
-            Intent(context, AddAirlineActivity::class.java)
     }
 }

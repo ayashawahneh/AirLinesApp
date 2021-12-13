@@ -34,5 +34,5 @@ interface ApiService {
     @DELETE("passenger/{id}")
     fun deletePassenger(
         @Path("id") passengerId: String
-    ): Single<String>
+    ): Single<Any>
 }

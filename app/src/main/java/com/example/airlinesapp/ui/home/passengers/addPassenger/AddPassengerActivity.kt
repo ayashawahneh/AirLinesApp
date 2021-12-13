@@ -93,7 +93,7 @@ class AddPassengerActivity : DaggerAppCompatActivity() {
     private fun buttonClickEvent() {
         binding.submitButton.setOnClickListener {
             if (addPassengerViewModel.addPassenger()) {
-                startActivity(newIntent(this, addPassengerViewModel.passengerName.value.toString()))
+                startActivity(HomeActivity.newIntentWithStringExtra(this, addPassengerViewModel.passengerName.value.toString()))
             } else {
                 Toast.makeText(this, "Error sending data, try again later!", Toast.LENGTH_SHORT)
                     .show()
@@ -103,12 +103,9 @@ class AddPassengerActivity : DaggerAppCompatActivity() {
 
     companion object {
 
-        private val EXTRA_Add_Passenger =
-            AddPassengerActivity::class.java.name + "_Add_Passenger_EXTRA"
+        fun newIntent(context: Context) =
+            Intent(context, AddPassengerActivity::class.java)
 
-        fun newIntent(context: Context, passengerName: String) =
-            Intent(context, HomeActivity::class.java)
-                .putExtra(EXTRA_Add_Passenger, passengerName)
     }
 
 }

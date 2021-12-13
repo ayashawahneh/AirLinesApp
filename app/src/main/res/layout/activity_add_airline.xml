@@ -84,7 +84,6 @@
                     android:text="@={model.slogan}" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/headQuarterContainer"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -150,7 +149,6 @@
                 android:backgroundTint="@color/secondary"
                 android:text="@string/submit"
                 android:textAllCaps="false" />
-
 
         </LinearLayout>
     </ScrollView>
