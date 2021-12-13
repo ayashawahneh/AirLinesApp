@@ -18,6 +18,7 @@ import javax.inject.Singleton
 @Singleton
 class ApiRepository @Inject constructor(private val apiService: ApiService) {
 
+    val passengersDataSource =  PassengersDataSource(apiService)
     fun getAirlines(): Single<List<AirLine>> {
         return apiService.getAirlines().subscribeOn(Schedulers.io())
     }
@@ -31,7 +32,7 @@ class ApiRepository @Inject constructor(private val apiService: ApiService) {
                 prefetchDistance = 5,
                 initialLoadSize = 40
             ),
-            pagingSourceFactory = { PassengersDataSource(apiService) }
+            pagingSourceFactory = { passengersDataSource }
         ).flowable
     }
 
