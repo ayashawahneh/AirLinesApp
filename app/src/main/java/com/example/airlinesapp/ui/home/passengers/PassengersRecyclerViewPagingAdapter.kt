@@ -19,7 +19,6 @@ class PassengersRecyclerViewPagingAdapter(
     ) {
     private val viewBinderHelper = ViewBinderHelper()
     private lateinit var view: SinglePassengerViewBinding
-    val deletedItem = MutableLiveData<Passenger>()
 
     override fun onBindViewHolder(holder: PassengersViewHolder, position: Int) {
         viewBinderHelper.setOpenOnlyOne(true)
@@ -35,10 +34,6 @@ class PassengersRecyclerViewPagingAdapter(
                 parent, false
             )
         return PassengersViewHolder(view, editListener, deleteListener)
-    }
-
-    fun deleteItem() {
-        this.snapshot().items.toMutableList().remove(deletedItem.value)
     }
 
     class PassengersViewHolder(

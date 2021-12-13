@@ -22,4 +22,9 @@
     <string name="delete_dialog_message">Are you sure you want to delete this passenger?</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
+    <string name="set">Set</string>
+    <string name="error_sending_data">Error sending data, try again later!</string>
+    <string name="new_airline">New Airline</string>
+    <string name="new_passenger">New Passenger</string>
+    <string name="edit_passenger">Edit Passenger</string>
 </resources>

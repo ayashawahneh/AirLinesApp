@@ -131,7 +131,9 @@
                     android:id="@+id/establishedEditText"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/text_field_height"
-                    android:inputType="numberDecimal"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:inputType="none"
                     android:maxLength="4"
                     android:text="@={model.established}" />
             </com.google.android.material.textfield.TextInputLayout>

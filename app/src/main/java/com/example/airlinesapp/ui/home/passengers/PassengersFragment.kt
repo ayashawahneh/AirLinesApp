@@ -1,10 +1,11 @@
 package com.example.airlinesapp.ui.home.passengers
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.airlinesapp.R
 import com.example.airlinesapp.databinding.FragmentPassengersBinding
@@ -12,6 +13,7 @@ import com.example.airlinesapp.di.daggerViewModels.ViewModelFactory
 import com.example.airlinesapp.models.Passenger
 import com.example.airlinesapp.ui.home.passengers.addPassenger.AddPassengerActivity
 import com.example.airlinesapp.ui.home.passengers.editPassenger.EditPassengerActivity
+import com.example.airlinesapp.util.Constants.EMPTY_LIST
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
@@ -49,7 +51,6 @@ class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
                 resources.getString(R.string.confirm)
             ) { _, _ ->
                 passengersViewModel.deletePassenger(it.id)
-                passengersAdapter.deletedItem.value = it
             }
             .show()
     }
@@ -58,10 +59,17 @@ class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentPassengersBinding.bind(view)
 
+        setActionBar()
         setupView()
+        networkStateObserving()
         observingPassengersList()
         observingPassengerDeleted()
         setupAddFloatingButton()
+    }
+
+    private fun setActionBar() {
+        val actionBar = (activity as AppCompatActivity).supportActionBar
+        actionBar?.title = resources.getString(R.string.passengers)
     }
 
     private fun setupView() {
@@ -69,13 +77,23 @@ class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
         binding.lifecycleOwner = viewLifecycleOwner
         passengersAdapter =
             PassengersRecyclerViewPagingAdapter(goToEditPassenger, showDialogConfirmation)
+        passengersAdapter.addLoadStateListener { loadState ->
+            if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && passengersAdapter.itemCount < 1)
+                passengersViewModel.networkState.value = EMPTY_LIST
+        }
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            setHasFixedSize(true)
             adapter = passengersAdapter.withLoadStateHeaderAndFooter(
                 header = PassengersLoadStateAdapter(),
                 footer = PassengersLoadStateAdapter()
             )
+        }
+    }
+
+    private fun networkStateObserving() {
+        passengersViewModel.networkState.observe(viewLifecycleOwner) {
+            Toast.makeText(this.requireContext(), it, Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
@@ -85,13 +103,10 @@ class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun observingPassengerDeleted() {
         passengersViewModel.isDeleted.observe(viewLifecycleOwner) {
-
             if (it) {
-                passengersAdapter.deleteItem()
-                passengersAdapter.notifyDataSetChanged()
+                passengersAdapter.refresh()
                 Toast.makeText(
                     this.requireContext(),
                     "Passenger data deleted successfully.",

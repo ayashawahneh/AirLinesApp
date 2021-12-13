@@ -3,7 +3,6 @@ package com.example.airlinesapp.ui.home.passengers.editPassenger
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -43,13 +42,29 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_passenger)
         binding.model = editPassengerViewModel
+        binding.airlineViewModel = airlinesViewModel
+        binding.lifecycleOwner = this
 
+        setActivityActionBar()
         fillFieldsWithPassengerData()
+        networkStateObserving()
         fillAirlineDropdownList()
         passengerNameObserving()
         airlineDropdownListObserving()
         buttonEnableObserving()
         buttonClickEvent()
+        isPassengerDataSentObserving()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
+    private fun setActivityActionBar() {
+        val actionBar = supportActionBar
+        actionBar!!.title = resources.getString(R.string.edit_passenger)
+        actionBar.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun fillFieldsWithPassengerData() {
@@ -63,21 +78,21 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
     private fun fillAirlineDropdownList() {
         airlinesViewModel.airlinesLiveData.observe(this,
             { airlinesList ->
-                if (airlinesList != null) {
-                    arrayAdapter = ArrayAdapter(this, R.layout.dropdown_item, airlinesList)
-                    binding.airlineAutoCompleteTextView.setAdapter(arrayAdapter)
-                    binding.progressBar.visibility = View.GONE
-                    binding.airlineNameContainer.airlineAutoCompleteTextView.onItemClickListener =
-                        AdapterView.OnItemClickListener { _, _, position, _ ->
-                            val selectedValue: AirLine? = arrayAdapter.getItem(position)
-                            editPassengerViewModel.airlineObject.value = selectedValue
-                        }
-                } else {
-                    Toast.makeText(this, "Error getting Airlines", Toast.LENGTH_SHORT)
-                        .show()
-                }
+                arrayAdapter = ArrayAdapter(this, R.layout.dropdown_item, airlinesList)
+                binding.airlineAutoCompleteTextView.setAdapter(arrayAdapter)
+                binding.airlineNameContainer.airlineAutoCompleteTextView.onItemClickListener =
+                    AdapterView.OnItemClickListener { _, _, position, _ ->
+                        val selectedValue: AirLine? = arrayAdapter.getItem(position)
+                        editPassengerViewModel.airlineObject.value = selectedValue
+                    }
             })
-        airlinesViewModel.getAirlinesList()
+    }
+
+    private fun networkStateObserving() {
+        airlinesViewModel.networkState.observe(this) {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 
     private fun buttonEnableObserving() {
@@ -103,7 +118,13 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
 
     private fun buttonClickEvent() {
         binding.submitButton.setOnClickListener {
-            if (editPassengerViewModel.editPassenger()) {
+            editPassengerViewModel.editPassenger()
+        }
+    }
+
+    private fun isPassengerDataSentObserving() {
+        editPassengerViewModel.isSent.observe(this) {
+            if (it) {
                 startActivity(
                     HomeActivity.newIntentWithStringExtra(
                         this,
@@ -111,7 +132,7 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
                     )
                 )
             } else {
-                Toast.makeText(this, "Error sending data, try again later!", Toast.LENGTH_SHORT)
+                Toast.makeText(this, resources.getString(R.string.error_sending_data), Toast.LENGTH_SHORT)
                     .show()
             }
         }

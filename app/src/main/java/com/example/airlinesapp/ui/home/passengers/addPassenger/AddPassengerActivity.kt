@@ -3,7 +3,6 @@ package com.example.airlinesapp.ui.home.passengers.addPassenger
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
@@ -40,33 +39,47 @@ class AddPassengerActivity : DaggerAppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_passenger)
         binding.model = addPassengerViewModel
+        binding.airlineViewModel = airlinesViewModel
+        binding.lifecycleOwner = this
 
+        setActivityActionBar()
         fillAirlineDropdownList()
         passengerNameObserving()
         airlineDropdownListObserving()
         buttonEnableObserving()
+        isPassengerDataSentObserving()
+        networkStateObserving()
         buttonClickEvent()
+    }
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
+    private fun setActivityActionBar() {
+        val actionBar = supportActionBar
+        actionBar!!.title = resources.getString(R.string.new_passenger)
+        actionBar.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun fillAirlineDropdownList() {
         airlinesViewModel.airlinesLiveData.observe(this,
             { airlinesList ->
-                if (airlinesList != null) {
-                    arrayAdapter = ArrayAdapter(this, R.layout.dropdown_item, airlinesList)
-                    binding.airlineAutoCompleteTextView.setAdapter(arrayAdapter)
-                    binding.progressBar.visibility = View.GONE
-
-                    binding.airlineNameContainer.airlineAutoCompleteTextView.onItemClickListener =
-                        OnItemClickListener { _, _, position, _ ->
-                            val selectedValue: AirLine? = arrayAdapter.getItem(position)
-                            addPassengerViewModel.airlineObject.value = selectedValue
-                        }
-                } else {
-                    Toast.makeText(this, "Error getting Airlines", Toast.LENGTH_SHORT)
-                        .show()
-                }
+                arrayAdapter = ArrayAdapter(this, R.layout.dropdown_item, airlinesList)
+                binding.airlineAutoCompleteTextView.setAdapter(arrayAdapter)
+                binding.airlineNameContainer.airlineAutoCompleteTextView.onItemClickListener =
+                    OnItemClickListener { _, _, position, _ ->
+                        val selectedValue: AirLine? = arrayAdapter.getItem(position)
+                        addPassengerViewModel.airlineObject.value = selectedValue
+                    }
             })
-        airlinesViewModel.getAirlinesList()
+    }
+
+    private fun networkStateObserving() {
+        airlinesViewModel.networkState.observe(this) {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 
     private fun buttonEnableObserving() {
@@ -92,10 +105,21 @@ class AddPassengerActivity : DaggerAppCompatActivity() {
 
     private fun buttonClickEvent() {
         binding.submitButton.setOnClickListener {
-            if (addPassengerViewModel.addPassenger()) {
-                startActivity(HomeActivity.newIntentWithStringExtra(this, addPassengerViewModel.passengerName.value.toString()))
+            addPassengerViewModel.addPassenger()
+        }
+    }
+
+    private fun isPassengerDataSentObserving() {
+        addPassengerViewModel.isSent.observe(this) {
+            if (it) {
+                startActivity(
+                    HomeActivity.newIntentWithStringExtra(
+                        this,
+                        addPassengerViewModel.passengerName.value.toString()
+                    )
+                )
             } else {
-                Toast.makeText(this, "Error sending data, try again later!", Toast.LENGTH_SHORT)
+                Toast.makeText(this, resources.getString(R.string.error_sending_data), Toast.LENGTH_SHORT)
                     .show()
             }
         }
@@ -105,7 +129,5 @@ class AddPassengerActivity : DaggerAppCompatActivity() {
 
         fun newIntent(context: Context) =
             Intent(context, AddPassengerActivity::class.java)
-
     }
-
 }

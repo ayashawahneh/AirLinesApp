@@ -6,8 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.airlinesapp.di.network.ApiRepository
 import com.example.airlinesapp.models.AirLine
-import com.example.airlinesapp.util.Constants.CURRENT_YEAR
-import com.example.airlinesapp.util.Constants.FIRST_AIRLINE_YEAR
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
@@ -22,6 +20,7 @@ class AddAirlineViewModel @Inject constructor(private val apiRepository: ApiRepo
     val established = MutableLiveData<String>()
     val enableSubmitButton = MutableLiveData(false)
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
+    val isSent = MutableLiveData<Boolean>()
 
     override fun onCleared() {
         super.onCleared()
@@ -30,17 +29,16 @@ class AddAirlineViewModel @Inject constructor(private val apiRepository: ApiRepo
 
     fun setEnableSubmitButton() {
         enableSubmitButton.value = (
-                validateRequiredFields(name.value.toString()) == null
-                        && validateRequiredFields(country.value.toString()) == null
-                        && validateRequiredFields(headQuarter.value.toString()) == null
+                validateRequiredFields(name.value) == null
+                        && validateRequiredFields(country.value) == null
+                        && validateRequiredFields(headQuarter.value) == null
                         && validateSlogan() == null
-                        && validateEstablished() == null
                         && validateWebsite() == null
                 )
     }
 
     fun validateSlogan(): String? {
-        return if (slogan.value == null) {
+        return if (slogan.value == null || slogan.value == "") {
             null
         } else {
             if (slogan.value.toString().length < 2) {
@@ -52,10 +50,10 @@ class AddAirlineViewModel @Inject constructor(private val apiRepository: ApiRepo
     }
 
     fun validateWebsite(): String? {
-        return if (website.value == null) {
+        return if (website.value == null || website.value == "") {
             null
         } else {
-            if (!(Patterns.WEB_URL.matcher(website.toString()).matches())) {
+            if (!(Patterns.WEB_URL.matcher(website.value!!).matches())) {
                 "Invalid Website"
             } else {
                 null
@@ -63,21 +61,9 @@ class AddAirlineViewModel @Inject constructor(private val apiRepository: ApiRepo
         }
     }
 
-    fun validateEstablished(): String? {
-        return if (established.value == null) {
-            null
-        } else {
-            if (!(established.value?.length == 4 && established.value?.toInt() in FIRST_AIRLINE_YEAR..CURRENT_YEAR)) {
-                "Invalid Year"
-            } else {
-                null
-            }
-        }
-    }
-
-    fun validateRequiredFields(str: String): String? {
+    fun validateRequiredFields(str: String?): String? {
         return when {
-            str.isEmpty() -> {
+            str == null || str == "" -> {
                 "Required"
             }
             str.length < 2 -> {
@@ -87,15 +73,14 @@ class AddAirlineViewModel @Inject constructor(private val apiRepository: ApiRepo
         }
     }
 
-    fun addAirline(): Boolean {
-        var isSent = false
+    fun addAirline() {
         val airlineData = AirLine(
-            country = country.value.toString(),
-            established = established.value.toString(),
-            slogan = slogan.value.toString(),
-            name = name.value.toString(),
-            headQuaters = headQuarter.value.toString(),
-            website = website.value.toString(),
+            country = country.value!!,
+            established = established.value,
+            slogan = slogan.value,
+            name = name.value!!,
+            headQuaters = headQuarter.value!!,
+            website = website.value,
         )
 
         compositeDisposable
@@ -105,14 +90,13 @@ class AddAirlineViewModel @Inject constructor(private val apiRepository: ApiRepo
                     .subscribe(
                         {
                             Log.d("addNewAir", it.name)
-                            isSent = true
+                            isSent.value = true
                         },
                         {
                             Log.d("addNewAir", it.message.toString())
-                            isSent = false
+                            isSent.value = false
                         }
                     )
             )
-        return isSent
     }
 }

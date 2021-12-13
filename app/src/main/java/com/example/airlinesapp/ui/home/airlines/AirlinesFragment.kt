@@ -2,6 +2,8 @@ package com.example.airlinesapp.ui.home.airlines
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.airlinesapp.R
@@ -27,9 +29,16 @@ class AirlinesFragment : DaggerFragment(R.layout.fragment_airlines) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentAirlinesBinding.bind(view)
 
+        setActionBar()
         setupView()
         observingAirlinesList()
         setupAddFloatingButton()
+        networkStateObserving()
+    }
+
+    private fun setActionBar() {
+        val actionBar = (activity as AppCompatActivity).supportActionBar
+        actionBar?.title = resources.getString(R.string.airlines)
     }
 
     private fun setupView() {
@@ -39,6 +48,13 @@ class AirlinesFragment : DaggerFragment(R.layout.fragment_airlines) {
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = airlinesListAdapter
+        }
+    }
+
+    private fun networkStateObserving() {
+        airlinesViewModel.networkState.observe(viewLifecycleOwner) {
+            Toast.makeText(this.requireContext(), it, Toast.LENGTH_SHORT)
+                .show()
         }
     }
 

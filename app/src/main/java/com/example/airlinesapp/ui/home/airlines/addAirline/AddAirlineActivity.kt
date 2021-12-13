@@ -1,5 +1,6 @@
 package com.example.airlinesapp.ui.home.airlines.addAirline
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -12,10 +13,17 @@ import com.example.airlinesapp.di.daggerViewModels.ViewModelFactory
 import com.example.airlinesapp.ui.home.HomeActivity
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
+import android.view.LayoutInflater
+import android.widget.NumberPicker
+import com.example.airlinesapp.databinding.YearPickerDialogBinding
+import com.example.airlinesapp.util.Constants.FIRST_AIRLINE_YEAR
+import java.util.*
+
 
 class AddAirlineActivity : DaggerAppCompatActivity() {
 
     private lateinit var binding: ActivityAddAirlineBinding
+    private lateinit var yearPickerBinding: YearPickerDialogBinding
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -28,27 +36,58 @@ class AddAirlineActivity : DaggerAppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_airline)
         binding.model = viewModel
+        binding.lifecycleOwner = this
 
-
+        setActivityActionBar()
         nameObserving()
         countryObserving()
         headQuarterObserving()
-        establishedObserving()
         websiteObserving()
         sloganObserving()
-
+        isAirlineDataSentObserving()
         buttonEnableObserving()
-        buttonClickEvent()
+        submitButtonClickEvent()
+        establishedClickEvent()
     }
 
-    private fun buttonClickEvent() {
-        binding.submitButton.setOnClickListener {
-            if (viewModel.addAirline()) {
-                startActivity(HomeActivity.newIntentWithStringExtra(this, viewModel.name.value.toString()))
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
+    private fun setActivityActionBar() {
+        val actionBar = supportActionBar
+        actionBar!!.title = resources.getString(R.string.new_airline)
+        actionBar.setDisplayHomeAsUpEnabled(true)
+    }
+
+    private fun isAirlineDataSentObserving() {
+        viewModel.isSent.observe(this) {
+            if (it) {
+                startActivity(
+                    HomeActivity.newIntentWithStringExtra(
+                        this,
+                        viewModel.name.value.toString()
+                    )
+                )
             } else {
-                Toast.makeText(this, "Error sending data, try again later!", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    this,
+                    resources.getString(R.string.error_sending_data),
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             }
+        }
+    }
+
+    private fun establishedClickEvent() {
+        binding.establishedEditText.setOnClickListener { showYearPickerDialog() }
+    }
+
+    private fun submitButtonClickEvent() {
+        binding.submitButton.setOnClickListener {
+            viewModel.addAirline()
         }
     }
 
@@ -79,13 +118,6 @@ class AddAirlineActivity : DaggerAppCompatActivity() {
         }
     }
 
-    private fun establishedObserving() {
-        viewModel.established.observe(this) {
-            binding.establishedContainer.helperText = viewModel.validateEstablished()
-            viewModel.setEnableSubmitButton()
-        }
-    }
-
     private fun websiteObserving() {
         viewModel.website.observe(this) {
             binding.websiteContainer.helperText = viewModel.validateWebsite()
@@ -98,6 +130,31 @@ class AddAirlineActivity : DaggerAppCompatActivity() {
             binding.sloganContainer.helperText = viewModel.validateSlogan()
             viewModel.setEnableSubmitButton()
         }
+    }
+
+    private fun showYearPickerDialog() {
+        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+        val dialog = AlertDialog.Builder(this).create()
+        yearPickerBinding = YearPickerDialogBinding.inflate(LayoutInflater.from(this))
+
+        dialog.setView(yearPickerBinding.root)
+
+        dialog.setTitle("Year Picker")
+        yearPickerBinding.yearPicker.minValue = FIRST_AIRLINE_YEAR
+        yearPickerBinding.yearPicker.maxValue = currentYear
+        yearPickerBinding.yearPicker.value = currentYear
+
+        yearPickerBinding.yearPicker.wrapSelectorWheel = false
+        yearPickerBinding.yearPicker.descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
+        yearPickerBinding.buttonSet.setOnClickListener {
+            binding.establishedEditText.setText(yearPickerBinding.yearPicker.value.toString())
+            dialog.dismiss()
+        }
+
+        yearPickerBinding.buttonCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 
     companion object {

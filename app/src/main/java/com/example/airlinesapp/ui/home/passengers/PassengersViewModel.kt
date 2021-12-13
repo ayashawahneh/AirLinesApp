@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagingData
 import com.example.airlinesapp.models.Passenger
-import com.example.airlinesapp.util.Constants.LOADED
 import com.example.airlinesapp.util.Constants.LOADING
 import com.example.airlinesapp.util.Constants.CHECK_NETWORK_ERROR
 import io.reactivex.disposables.CompositeDisposable
@@ -16,7 +15,7 @@ import com.example.airlinesapp.di.network.ApiRepository
 class PassengersViewModel @Inject constructor(private val repository: ApiRepository) :
     ViewModel() {
     var isLoading = MutableLiveData<Boolean>()
-    private var networkState: MutableLiveData<String> = MutableLiveData(LOADING)
+    var networkState: MutableLiveData<String> = MutableLiveData(LOADING)
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     val passengersList = MutableLiveData<PagingData<Passenger>>()
     val isDeleted = MutableLiveData<Boolean>()
@@ -26,7 +25,7 @@ class PassengersViewModel @Inject constructor(private val repository: ApiReposit
     }
 
     private fun getPassengers() {
-        networkState.postValue(LOADING)
+        networkState.value = LOADING
         isLoading.value = true
         compositeDisposable.add(
             repository
@@ -34,7 +33,6 @@ class PassengersViewModel @Inject constructor(private val repository: ApiReposit
                 .subscribe(
                     {
                         passengersList.value = it
-                        networkState.value = LOADED
                         isLoading.value = false
                     },
                     {
@@ -52,6 +50,7 @@ class PassengersViewModel @Inject constructor(private val repository: ApiReposit
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {
+                            Log.d("DeletePas", it.toString())
                             isDeleted.value = true
                         },
                         {

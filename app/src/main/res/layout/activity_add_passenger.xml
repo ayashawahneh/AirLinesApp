@@ -5,6 +5,12 @@
 
     <data>
 
+        <import type="android.view.View" />
+
+        <variable
+            name="airlineViewModel"
+            type="com.example.airlinesapp.ui.home.airlines.AirlinesViewModel" />
+
         <variable
             name="model"
             type="com.example.airlinesapp.ui.home.passengers.addPassenger.AddPassengerViewModel" />
@@ -59,7 +65,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/text_field_height"
                     android:inputType="numberDecimal"
-                    android:maxLength="5"
+                    android:maxLength="4"
                     android:text="@={model.trips}" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -89,7 +95,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="3dp"
-                android:indeterminateTint="@color/primary" />
+                android:indeterminateTint="@color/primary"
+                android:visibility="@{airlineViewModel.isLoading ? View.VISIBLE : View.GONE}" />
 
             <Space
                 android:layout_width="match_parent"

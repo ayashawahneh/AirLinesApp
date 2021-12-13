@@ -18,6 +18,7 @@ class AddPassengerViewModel @Inject constructor(private val apiRepository: ApiRe
     val airlineName = MutableLiveData<String>()
     val airlineObject = MutableLiveData<AirLine>()
     val enableSubmitButton = MutableLiveData(false)
+    val isSent = MutableLiveData<Boolean>()
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun onCleared() {
@@ -27,7 +28,7 @@ class AddPassengerViewModel @Inject constructor(private val apiRepository: ApiRe
 
     fun validatePassengerName(): String? {
         return when {
-            passengerName.value == null -> {
+            passengerName.value == null || passengerName.value == "" -> {
                 "Required"
             }
             passengerName.value.toString().length < 2 -> {
@@ -38,11 +39,10 @@ class AddPassengerViewModel @Inject constructor(private val apiRepository: ApiRe
     }
 
     fun validateAirlineName(): String? {
-        return if (airlineName.value == null)
+        return if (airlineName.value == null || airlineName.value == "")
             "Required"
         else
             null
-
     }
 
     fun setEnableSubmitButton() {
@@ -52,8 +52,7 @@ class AddPassengerViewModel @Inject constructor(private val apiRepository: ApiRe
                 )
     }
 
-    fun addPassenger(): Boolean {
-        var isSent = false
+    fun addPassenger() {
         if (trips.value == null || trips.value == "")
             trips.value = "0"
 
@@ -70,14 +69,13 @@ class AddPassengerViewModel @Inject constructor(private val apiRepository: ApiRe
                     .subscribe(
                         {
                             Log.d("addNewPas", it.name)
-                            isSent = true
+                            isSent.value = true
                         },
                         {
                             Log.d("ErrorPas", it.toString())
-                            isSent = false
+                            isSent.value = false
                         }
                     )
             )
-        return isSent
     }
 }
