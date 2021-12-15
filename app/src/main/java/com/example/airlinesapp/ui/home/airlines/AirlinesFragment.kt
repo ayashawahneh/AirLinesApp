@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.airlinesapp.R
 import com.example.airlinesapp.databinding.FragmentAirlinesBinding
 import com.example.airlinesapp.di.daggerViewModels.ViewModelFactory
-import com.example.airlinesapp.ui.home.airlines.addAirline.AddAirlineActivity
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -25,6 +24,7 @@ class AirlinesFragment : DaggerFragment(R.layout.fragment_airlines) {
     private var _binding: FragmentAirlinesBinding? = null
     val binding get() = _binding!!
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentAirlinesBinding.bind(view)
@@ -32,7 +32,6 @@ class AirlinesFragment : DaggerFragment(R.layout.fragment_airlines) {
         setActionBar()
         setupView()
         observingAirlinesList()
-        setupAddFloatingButton()
         networkStateObserving()
     }
 
@@ -61,12 +60,6 @@ class AirlinesFragment : DaggerFragment(R.layout.fragment_airlines) {
     private fun observingAirlinesList() {
         airlinesViewModel.airlinesLiveData.observe(viewLifecycleOwner) {
             airlinesListAdapter.submitList(it)
-        }
-    }
-
-    private fun setupAddFloatingButton() {
-        binding.floatingActionButton.setOnClickListener {
-            startActivity(AddAirlineActivity.newIntent(this.requireContext()))
         }
     }
 }

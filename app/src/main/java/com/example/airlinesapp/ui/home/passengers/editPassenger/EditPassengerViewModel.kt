@@ -31,7 +31,7 @@ class EditPassengerViewModel @Inject constructor(private val apiRepository: ApiR
             passengerName.value == null || passengerName.value == "" -> {
                 "Required"
             }
-            passengerName.value.toString().length < 2 -> {
+            passengerName.value.toString().length < 3 -> {
                 "Too short"
             }
             else -> null

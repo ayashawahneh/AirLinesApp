@@ -41,7 +41,7 @@ class AddAirlineViewModel @Inject constructor(private val apiRepository: ApiRepo
         return if (slogan.value == null || slogan.value == "") {
             null
         } else {
-            if (slogan.value.toString().length < 2) {
+            if (slogan.value.toString().length < 3) {
                 "Too short"
             } else {
                 null
@@ -66,7 +66,7 @@ class AddAirlineViewModel @Inject constructor(private val apiRepository: ApiRepo
             str == null || str == "" -> {
                 "Required"
             }
-            str.length < 2 -> {
+            str.length < 3 -> {
                 "Too short"
             }
             else -> null

@@ -27,4 +27,6 @@
     <string name="new_airline">New Airline</string>
     <string name="new_passenger">New Passenger</string>
     <string name="edit_passenger">Edit Passenger</string>
+    <string name="deleted_successfully">Passenger data deleted successfully.</string>
+    <string name="error_deleting">Error deleting, try again later!</string>
 </resources>

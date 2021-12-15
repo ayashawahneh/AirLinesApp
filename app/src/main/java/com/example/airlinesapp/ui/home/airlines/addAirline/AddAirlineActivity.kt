@@ -16,9 +16,9 @@ import javax.inject.Inject
 import android.view.LayoutInflater
 import android.widget.NumberPicker
 import com.example.airlinesapp.databinding.YearPickerDialogBinding
+import com.example.airlinesapp.util.Constants.AIRLINE_RESULT_CODE
 import com.example.airlinesapp.util.Constants.FIRST_AIRLINE_YEAR
 import java.util.*
-
 
 class AddAirlineActivity : DaggerAppCompatActivity() {
 
@@ -64,12 +64,13 @@ class AddAirlineActivity : DaggerAppCompatActivity() {
     private fun isAirlineDataSentObserving() {
         viewModel.isSent.observe(this) {
             if (it) {
-                startActivity(
+                setResult( AIRLINE_RESULT_CODE,
                     HomeActivity.newIntentWithStringExtra(
                         this,
-                        viewModel.name.value.toString()
+                        "${viewModel.name.value} was added successfully"
                     )
                 )
+                finish()
             } else {
                 Toast.makeText(
                     this,

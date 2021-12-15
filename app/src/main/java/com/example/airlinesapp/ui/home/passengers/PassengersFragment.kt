@@ -11,7 +11,7 @@ import com.example.airlinesapp.R
 import com.example.airlinesapp.databinding.FragmentPassengersBinding
 import com.example.airlinesapp.di.daggerViewModels.ViewModelFactory
 import com.example.airlinesapp.models.Passenger
-import com.example.airlinesapp.ui.home.passengers.addPassenger.AddPassengerActivity
+import com.example.airlinesapp.ui.home.HomeActivity
 import com.example.airlinesapp.ui.home.passengers.editPassenger.EditPassengerActivity
 import com.example.airlinesapp.util.Constants.EMPTY_LIST
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -19,7 +19,6 @@ import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
 class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
-
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val passengersViewModel by lazy {
@@ -33,7 +32,7 @@ class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
         get() = _binding!!
 
     private val goToEditPassenger: (Passenger) -> Unit = {
-        startActivity(
+        (activity as HomeActivity).launcher.launch(
             EditPassengerActivity.newIntentWithPassengerExtra(
                 this.requireContext(),
                 it
@@ -64,7 +63,6 @@ class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
         networkStateObserving()
         observingPassengersList()
         observingPassengerDeleted()
-        setupAddFloatingButton()
     }
 
     private fun setActionBar() {
@@ -109,23 +107,17 @@ class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
                 passengersAdapter.refresh()
                 Toast.makeText(
                     this.requireContext(),
-                    "Passenger data deleted successfully.",
+                    resources.getString(R.string.deleted_successfully),
                     Toast.LENGTH_SHORT
                 )
                     .show()
             } else
                 Toast.makeText(
                     this.requireContext(),
-                    "Error deleting, try again later!",
+                    resources.getString(R.string.error_deleting),
                     Toast.LENGTH_SHORT
                 )
                     .show()
-        }
-    }
-
-    private fun setupAddFloatingButton() {
-        binding.floatingActionButton.setOnClickListener {
-            startActivity(AddPassengerActivity.newIntent(this.requireContext()))
         }
     }
 }

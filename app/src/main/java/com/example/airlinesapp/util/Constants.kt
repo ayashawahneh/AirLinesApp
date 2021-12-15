@@ -10,6 +10,8 @@ object Constants {
     const val EMPTY_LIST = "No data to view"
 
     const val FIRST_AIRLINE_YEAR = 1919
+    const val AIRLINE_RESULT_CODE = 123
+    const val PASSENGER_RESULT_CODE = 321
 
 
 }

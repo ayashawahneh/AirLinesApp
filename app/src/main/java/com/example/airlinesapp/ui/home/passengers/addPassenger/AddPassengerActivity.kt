@@ -16,6 +16,7 @@ import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
 import android.widget.AdapterView.OnItemClickListener
 import com.example.airlinesapp.ui.home.HomeActivity
+import com.example.airlinesapp.util.Constants.PASSENGER_RESULT_CODE
 import kotlinx.android.synthetic.main.activity_add_passenger.view.*
 
 class AddPassengerActivity : DaggerAppCompatActivity() {
@@ -51,6 +52,7 @@ class AddPassengerActivity : DaggerAppCompatActivity() {
         networkStateObserving()
         buttonClickEvent()
     }
+
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
@@ -112,14 +114,20 @@ class AddPassengerActivity : DaggerAppCompatActivity() {
     private fun isPassengerDataSentObserving() {
         addPassengerViewModel.isSent.observe(this) {
             if (it) {
-                startActivity(
+                setResult(
+                    PASSENGER_RESULT_CODE,
                     HomeActivity.newIntentWithStringExtra(
                         this,
-                        addPassengerViewModel.passengerName.value.toString()
+                        "${addPassengerViewModel.passengerName.value} was added successfully to ${addPassengerViewModel.airlineName.value}"
                     )
                 )
+                finish()
             } else {
-                Toast.makeText(this, resources.getString(R.string.error_sending_data), Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    this,
+                    resources.getString(R.string.error_sending_data),
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             }
         }

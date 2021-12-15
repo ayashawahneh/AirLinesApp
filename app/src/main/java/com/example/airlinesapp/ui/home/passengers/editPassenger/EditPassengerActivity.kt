@@ -15,6 +15,7 @@ import com.example.airlinesapp.models.AirLine
 import com.example.airlinesapp.models.Passenger
 import com.example.airlinesapp.ui.home.HomeActivity
 import com.example.airlinesapp.ui.home.airlines.AirlinesViewModel
+import com.example.airlinesapp.util.Constants.PASSENGER_RESULT_CODE
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_add_passenger.view.*
 import javax.inject.Inject
@@ -23,9 +24,8 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
     private lateinit var binding: ActivityEditPassengerBinding
     private lateinit var arrayAdapter: ArrayAdapter<AirLine>
     val passenger by lazy {
-        intent.getParcelableExtra<Passenger>(EXTRA_Edit_Passenger)
+        intent.getParcelableExtra<Passenger>(EXTRA_EDIT_PASSENGER)
     }
-
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val airlinesViewModel by lazy {
@@ -36,7 +36,6 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
         ViewModelProvider(this, viewModelFactory)
             .get(EditPassengerViewModel::class.java)
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,12 +124,14 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
     private fun isPassengerDataSentObserving() {
         editPassengerViewModel.isSent.observe(this) {
             if (it) {
-                startActivity(
+                setResult(
+                    PASSENGER_RESULT_CODE,
                     HomeActivity.newIntentWithStringExtra(
                         this,
-                        editPassengerViewModel.passengerName.value.toString()
+                       "${editPassengerViewModel.passengerName.value.toString()} updated successfully"
                     )
                 )
+                finish()
             } else {
                 Toast.makeText(this, resources.getString(R.string.error_sending_data), Toast.LENGTH_SHORT)
                     .show()
@@ -140,11 +141,11 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
 
     companion object {
 
-        private val EXTRA_Edit_Passenger =
-            EditPassengerActivity::class.java.name + "_Edit_Passenger_EXTRA"
+        private val EXTRA_EDIT_PASSENGER =
+            EditPassengerActivity::class.java.name + "_Edit_PASSENGER_EXTRA"
 
         fun newIntentWithPassengerExtra(context: Context, passenger: Passenger) =
             Intent(context, EditPassengerActivity::class.java)
-                .putExtra(EXTRA_Edit_Passenger, passenger)
+                .putExtra(EXTRA_EDIT_PASSENGER, passenger)
     }
 }
