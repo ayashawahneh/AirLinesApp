@@ -1,6 +1,6 @@
 package com.example.airlinesapp.di
 
-import android.app.Application
+import android.content.Context
 import com.example.airlinesapp.context.MyApplication
 import com.example.airlinesapp.di.daggerViewModels.ViewModelFactoryModule
 import com.example.airlinesapp.di.daggerViewModels.ViewModelModule
@@ -24,9 +24,18 @@ import javax.inject.Singleton
         RetrofitModule::class
     ]
 )
-interface AppComponent : AndroidInjector<MyApplication> {
-    @Component.Factory
-    interface Factory {
-        fun create(@BindsInstance application: Application): AppComponent
+interface AppComponent: AndroidInjector<MyApplication> {
+    override fun inject(application: MyApplication)
+
+    @Component.Builder
+    interface Builder {
+        @BindsInstance
+        fun application(myApplication: MyApplication): Builder
+
+        @BindsInstance
+        fun context(context: Context): Builder
+
+        fun build(): AppComponent
     }
 }
+

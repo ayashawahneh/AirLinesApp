@@ -5,8 +5,9 @@
     <data>
 
         <variable
-            name="airline"
-            type="com.example.airlinesapp.models.AirLine" />
+            name="favoriteAirline"
+            type="com.example.airlinesapp.models.AirlineWithFavoriteFlag" />
+
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -28,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:contentDescription="@string/airline_image"
-                android:loadImage="@{airline.logo}"
+                android:loadImage="@{favoriteAirline.airline.logo}"
                 android:padding="8dp"
                 android:scaleType="centerInside" />
 
@@ -43,7 +44,7 @@
                     android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{airline.name}"
+                    android:text="@{favoriteAirline.airline.name}"
                     android:textAppearance="?attr/textAppearanceHeadline6" />
 
                 <TextView
@@ -51,11 +52,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@{airline.country}"
+                    android:text="@{favoriteAirline.airline.country}"
                     android:textAppearance="?attr/textAppearanceBody2"
                     android:textColor="?android:attr/textColorSecondary" />
 
             </LinearLayout>
         </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/iconFavorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:button="@drawable/selector_favorite_item"
+            android:checked="@{favoriteAirline.favorite}"/>
+
     </com.google.android.material.card.MaterialCardView>
 </layout>

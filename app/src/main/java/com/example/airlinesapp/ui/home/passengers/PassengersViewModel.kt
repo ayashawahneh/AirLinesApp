@@ -9,11 +9,11 @@ import com.example.airlinesapp.util.Constants.LOADING
 import com.example.airlinesapp.util.Constants.CHECK_NETWORK_ERROR
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
-import com.example.airlinesapp.di.network.ApiRepository
+import com.example.airlinesapp.di.network.Repository
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 
-class PassengersViewModel @Inject constructor(private val repository: ApiRepository) :
+class PassengersViewModel @Inject constructor(private val repository: Repository) :
     ViewModel() {
     var isLoading = MutableLiveData<Boolean>()
     var networkState: MutableLiveData<String> = MutableLiveData(LOADING)

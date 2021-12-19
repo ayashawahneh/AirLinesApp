@@ -3,16 +3,15 @@ package com.example.airlinesapp.ui.home.passengers.addPassenger
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.airlinesapp.di.network.ApiRepository
+import com.example.airlinesapp.di.network.Repository
 import com.example.airlinesapp.models.AirLine
 import com.example.airlinesapp.models.PassengerPost
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
-class AddPassengerViewModel @Inject constructor(private val apiRepository: ApiRepository) :
+class AddPassengerViewModel @Inject constructor(private val repository: Repository) :
     ViewModel() {
-
     val passengerName = MutableLiveData<String>()
     val trips = MutableLiveData<String>()
     val airlineName = MutableLiveData<String>()
@@ -64,7 +63,7 @@ class AddPassengerViewModel @Inject constructor(private val apiRepository: ApiRe
 
         compositeDisposable
             .add(
-                apiRepository.addNewPassenger(passengerData)
+                repository.addNewPassenger(passengerData)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {

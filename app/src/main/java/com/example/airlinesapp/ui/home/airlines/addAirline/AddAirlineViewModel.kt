@@ -4,13 +4,13 @@ import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.airlinesapp.di.network.ApiRepository
+import com.example.airlinesapp.di.network.Repository
 import com.example.airlinesapp.models.AirLine
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
-class AddAirlineViewModel @Inject constructor(private val apiRepository: ApiRepository) :
+class AddAirlineViewModel @Inject constructor(private val repository: Repository) :
     ViewModel() {
     val name = MutableLiveData<String>()
     val country = MutableLiveData<String>()
@@ -85,7 +85,7 @@ class AddAirlineViewModel @Inject constructor(private val apiRepository: ApiRepo
 
         compositeDisposable
             .add(
-                apiRepository.addNewAirline(airlineData)
+                repository.addNewAirline(airlineData)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {
