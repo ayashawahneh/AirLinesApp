@@ -60,10 +60,8 @@ class Repository @Inject constructor(
             .subscribeOn(Schedulers.io())
     }
 
-    fun getPassengers()=
-//    : Flowable<PagingData<Passenger>> {
-//        return
-        Pager(
+    fun getPassengers(): Flowable<PagingData<Passenger>> {
+        return Pager(
             config = PagingConfig(
                 pageSize = PASSENGERS_PER_PAGE,
                 enablePlaceholders = true,
@@ -73,8 +71,8 @@ class Repository @Inject constructor(
             ),
             pagingSourceFactory = { PassengersDataSource(apiService) }
         )
-//            .flowable
-//    }
+            .flowable
+    }
 
     fun addNewAirline(airlineData: AirLine): Single<AirLine> {
         return apiService.addNewAirline(airlineData).subscribeOn(Schedulers.io())
