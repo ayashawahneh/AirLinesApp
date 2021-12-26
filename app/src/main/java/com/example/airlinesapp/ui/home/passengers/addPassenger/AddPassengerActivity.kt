@@ -15,14 +15,17 @@ import com.example.airlinesapp.ui.home.airlines.AirlinesViewModel
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
 import android.widget.AdapterView.OnItemClickListener
+import com.example.airlinesapp.models.AirlineWithFavoriteFlag
 import com.example.airlinesapp.ui.home.HomeActivity
 import com.example.airlinesapp.util.Constants.PASSENGER_RESULT_CODE
 import kotlinx.android.synthetic.main.activity_add_passenger.view.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 class AddPassengerActivity : DaggerAppCompatActivity() {
 
     private lateinit var binding: ActivityAddPassengerBinding
-    private lateinit var arrayAdapter: ArrayAdapter<AirLine>
+    private lateinit var arrayAdapter: ArrayAdapter<AirlineWithFavoriteFlag>
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -34,7 +37,6 @@ class AddPassengerActivity : DaggerAppCompatActivity() {
         ViewModelProvider(this, viewModelFactory)
             .get(AddPassengerViewModel::class.java)
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +73,7 @@ class AddPassengerActivity : DaggerAppCompatActivity() {
                 binding.airlineAutoCompleteTextView.setAdapter(arrayAdapter)
                 binding.airlineNameContainer.airlineAutoCompleteTextView.onItemClickListener =
                     OnItemClickListener { _, _, position, _ ->
-                        val selectedValue: AirLine? = arrayAdapter.getItem(position)
+                        val selectedValue: AirLine? = arrayAdapter.getItem(position)?.airline
                         addPassengerViewModel.airlineObject.value = selectedValue
                     }
             })

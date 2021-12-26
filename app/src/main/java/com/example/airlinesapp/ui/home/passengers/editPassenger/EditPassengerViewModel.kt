@@ -3,14 +3,14 @@ package com.example.airlinesapp.ui.home.passengers.editPassenger
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.airlinesapp.di.network.ApiRepository
+import com.example.airlinesapp.di.network.Repository
 import com.example.airlinesapp.models.AirLine
 import com.example.airlinesapp.models.PassengerPost
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
-class EditPassengerViewModel @Inject constructor(private val apiRepository: ApiRepository) :
+class EditPassengerViewModel @Inject constructor(private val repository: Repository) :
     ViewModel() {
     val passengerId = MutableLiveData<String>()
     val passengerName = MutableLiveData<String>()
@@ -63,7 +63,7 @@ class EditPassengerViewModel @Inject constructor(private val apiRepository: ApiR
         )
         compositeDisposable
             .add(
-                apiRepository.editPassenger(passengerId.value!!, passengerData)
+                repository.editPassenger(passengerId.value!!, passengerData)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {

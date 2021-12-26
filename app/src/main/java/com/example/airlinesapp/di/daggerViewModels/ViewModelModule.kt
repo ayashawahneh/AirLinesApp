@@ -2,7 +2,6 @@ package com.example.airlinesapp.di.daggerViewModels
 
 import androidx.lifecycle.ViewModel
 import com.example.airlinesapp.ui.home.airlines.AirlinesViewModel
-import com.example.airlinesapp.ui.home.airlines.addAirline.AddAirlineViewModel
 import com.example.airlinesapp.ui.home.passengers.PassengersViewModel
 import com.example.airlinesapp.ui.home.passengers.addPassenger.AddPassengerViewModel
 import com.example.airlinesapp.ui.home.passengers.editPassenger.EditPassengerViewModel
@@ -22,11 +21,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(PassengersViewModel::class)
     internal abstract fun bindPassengersViewModel(viewModel: PassengersViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(AddAirlineViewModel::class)
-    internal abstract fun bindAddAirlineViewModel(viewModel: AddAirlineViewModel): ViewModel
 
     @Binds
     @IntoMap

@@ -16,8 +16,10 @@ import com.example.airlinesapp.ui.home.passengers.editPassenger.EditPassengerAct
 import com.example.airlinesapp.util.Constants.EMPTY_LIST
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.android.support.DaggerFragment
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -57,6 +59,7 @@ class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentPassengersBinding.bind(view)
+        setHasOptionsMenu(true)
 
         setActionBar()
         setupView()

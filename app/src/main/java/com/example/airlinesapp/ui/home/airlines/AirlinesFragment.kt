@@ -10,10 +10,11 @@ import com.example.airlinesapp.R
 import com.example.airlinesapp.databinding.FragmentAirlinesBinding
 import com.example.airlinesapp.di.daggerViewModels.ViewModelFactory
 import dagger.android.support.DaggerFragment
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class AirlinesFragment : DaggerFragment(R.layout.fragment_airlines) {
-
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val airlinesViewModel by lazy {
@@ -23,16 +24,27 @@ class AirlinesFragment : DaggerFragment(R.layout.fragment_airlines) {
     private lateinit var airlinesListAdapter: AirlinesRecyclerViewListAdapter
     private var _binding: FragmentAirlinesBinding? = null
     val binding get() = _binding!!
+    private lateinit var favoritesIdsList: MutableList<String>
+    private val saveIdInAirlinesFavoriteList: (String) -> Unit = {
+        favoritesIdsList.add(it)
+        airlinesViewModel.favoriteAirlinesList.value = favoritesIdsList
+    }
+    private val removeIdFromAirlinesFavoriteList: (String) -> Unit = {
+        favoritesIdsList.remove(it)
+        airlinesViewModel.favoriteAirlinesList.value = favoritesIdsList
+    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentAirlinesBinding.bind(view)
+        setHasOptionsMenu(true)
 
         setActionBar()
         setupView()
         observingAirlinesList()
         networkStateObserving()
+        favoriteAirlinesListObserving()
     }
 
     private fun setActionBar() {
@@ -41,12 +53,28 @@ class AirlinesFragment : DaggerFragment(R.layout.fragment_airlines) {
     }
 
     private fun setupView() {
+        favoritesIdsList = airlinesViewModel.favoriteAirlinesList.value!!
         binding.model = airlinesViewModel
         binding.lifecycleOwner = viewLifecycleOwner
-        airlinesListAdapter = AirlinesRecyclerViewListAdapter()
+        airlinesListAdapter = AirlinesRecyclerViewListAdapter(
+            saveIdInAirlinesFavoriteList,
+            removeIdFromAirlinesFavoriteList
+        )
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = airlinesListAdapter
+        }
+    }
+
+    private fun observingAirlinesList() {
+        airlinesViewModel.airlinesLiveData.observe(viewLifecycleOwner) {
+            airlinesListAdapter.submitList(it)
+        }
+    }
+
+    private fun favoriteAirlinesListObserving() {
+        airlinesViewModel.favoriteAirlinesList.observe(viewLifecycleOwner) {
+            airlinesViewModel.updateAirlineIdsInDataStore()
         }
     }
 
@@ -54,12 +82,6 @@ class AirlinesFragment : DaggerFragment(R.layout.fragment_airlines) {
         airlinesViewModel.networkState.observe(viewLifecycleOwner) {
             Toast.makeText(this.requireContext(), it, Toast.LENGTH_SHORT)
                 .show()
-        }
-    }
-
-    private fun observingAirlinesList() {
-        airlinesViewModel.airlinesLiveData.observe(viewLifecycleOwner) {
-            airlinesListAdapter.submitList(it)
         }
     }
 }

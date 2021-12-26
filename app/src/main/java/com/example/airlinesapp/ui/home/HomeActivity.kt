@@ -19,11 +19,13 @@ import com.example.airlinesapp.ui.home.passengers.addPassenger.AddPassengerActiv
 import com.example.airlinesapp.util.Constants.AIRLINE_RESULT_CODE
 import com.example.airlinesapp.util.Constants.PASSENGER_RESULT_CODE
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
     lateinit var launcher: ActivityResultLauncher<Intent>
-    private set
+        private set
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {

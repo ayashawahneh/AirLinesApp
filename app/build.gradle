@@ -16,7 +16,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField "String","BASE_URL",'"https://api.instantwebtools.net/v1/"'
+        buildConfigField "String", "BASE_URL", '"https://api.instantwebtools.net/v1/"'
     }
     buildFeatures {
         viewBinding true
@@ -92,4 +92,8 @@ dependencies {
 
     //recycler view item swipe
     implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
-}
+
+    //Preferences DataStore
+    implementation("androidx.datastore:datastore-preferences-rxjava2:1.0.0")
+   // implementation "androidx.datastore:datastore-preferences-rxjava3:1.0.0"
+    }
