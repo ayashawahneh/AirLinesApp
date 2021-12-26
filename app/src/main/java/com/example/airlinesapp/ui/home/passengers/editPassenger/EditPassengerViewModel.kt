@@ -3,13 +3,16 @@ package com.example.airlinesapp.ui.home.passengers.editPassenger
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.airlinesapp.R
 import com.example.airlinesapp.di.network.Repository
 import com.example.airlinesapp.models.AirLine
 import com.example.airlinesapp.models.PassengerPost
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class EditPassengerViewModel @Inject constructor(private val repository: Repository) :
     ViewModel() {
     val passengerId = MutableLiveData<String>()
@@ -26,21 +29,21 @@ class EditPassengerViewModel @Inject constructor(private val repository: Reposit
         compositeDisposable.clear()
     }
 
-    fun validatePassengerName(): String? {
+    fun validatePassengerName(): Int? {
         return when {
-            passengerName.value == null || passengerName.value == "" -> {
-                "Required"
+            passengerName.value.isNullOrEmpty()-> {
+                R.string.required
             }
             passengerName.value.toString().length < 3 -> {
-                "Too short"
+                R.string.too_short
             }
             else -> null
         }
     }
 
-    fun validateAirlineName(): String? {
-        return if (airlineName.value == null || airlineName.value == "")
-            "Required"
+    fun validateAirlineName(): Int? {
+        return if (airlineName.value.isNullOrEmpty())
+            R.string.required
         else
             null
     }
@@ -53,7 +56,7 @@ class EditPassengerViewModel @Inject constructor(private val repository: Reposit
     }
 
     fun editPassenger() {
-        if (trips.value == null || trips.value == "")
+        if (trips.value.isNullOrEmpty())
             trips.value = "0"
 
         val passengerData = PassengerPost(

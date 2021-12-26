@@ -149,6 +149,7 @@
                 android:layout_height="@dimen/text_field_height"
                 android:layout_weight="0"
                 android:backgroundTint="@color/secondary"
+                android:enabled="@{model.enableSubmitButton}"
                 android:text="@string/submit"
                 android:textAllCaps="false" />
 

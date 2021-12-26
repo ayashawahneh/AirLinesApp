@@ -4,21 +4,21 @@ import android.annotation.SuppressLint
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.rxjava2.flowable
+import androidx.paging.rxjava2.observable
 import com.example.airlinesapp.models.AirLine
 import com.example.airlinesapp.models.AirlineWithFavoriteFlag
 import com.example.airlinesapp.models.Passenger
 import com.example.airlinesapp.models.PassengerPost
 import com.example.airlinesapp.ui.home.airlines.DataStoreManager
 import com.example.airlinesapp.ui.home.passengers.PassengersDataSource
-import com.example.airlinesapp.util.Constants.PASSENGERS_PER_PAGE
-import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 import javax.inject.Singleton
 import io.reactivex.internal.operators.single.SingleDelayWithObservable
+import java.util.*
 
 @ExperimentalCoroutinesApi
 @Singleton
@@ -59,17 +59,17 @@ class Repository @Inject constructor(
             .subscribeOn(Schedulers.io())
     }
 
-    fun getPassengers(searchedText: String): Flowable<PagingData<Passenger>> {
+    fun getPassengers(searchedText: String): Observable<PagingData<Passenger>> {
         return Pager(
             config = PagingConfig(
-                pageSize = PASSENGERS_PER_PAGE,
+                pageSize = 10,
                 enablePlaceholders = true,
                 maxSize = 30,
                 prefetchDistance = 5,
                 initialLoadSize = 40
             ),
             pagingSourceFactory = { PassengersDataSource(apiService, searchedText) }
-        ).flowable
+        ).observable
     }
 
     fun addNewAirline(airlineData: AirLine): Single<AirLine> {

@@ -4,13 +4,17 @@ import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.airlinesapp.R
 import com.example.airlinesapp.di.network.Repository
 import com.example.airlinesapp.models.AirLine
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
-class AddAirlineViewModel @Inject constructor(private val repository: Repository) :
+@ExperimentalCoroutinesApi
+class AddAirlineViewModel
+@Inject constructor(private val repository: Repository) :
     ViewModel() {
     val name = MutableLiveData<String>()
     val country = MutableLiveData<String>()
@@ -37,37 +41,37 @@ class AddAirlineViewModel @Inject constructor(private val repository: Repository
                 )
     }
 
-    fun validateSlogan(): String? {
-        return if (slogan.value == null || slogan.value == "") {
+    fun validateSlogan(): Int? {
+        return if (slogan.value.isNullOrEmpty()) {
             null
         } else {
             if (slogan.value.toString().length < 3) {
-                "Too short"
+                R.string.too_short
             } else {
                 null
             }
         }
     }
 
-    fun validateWebsite(): String? {
-        return if (website.value == null || website.value == "") {
+    fun validateWebsite(): Int? {
+        return if (website.value.isNullOrEmpty()) {
             null
         } else {
             if (!(Patterns.WEB_URL.matcher(website.value!!).matches())) {
-                "Invalid Website"
+                R.string.invalid_website
             } else {
                 null
             }
         }
     }
 
-    fun validateRequiredFields(str: String?): String? {
+    fun validateRequiredFields(str: String?): Int? {
         return when {
-            str == null || str == "" -> {
-                "Required"
+            str.isNullOrEmpty() -> {
+                R.string.required
             }
             str.length < 3 -> {
-                "Too short"
+                R.string.too_short
             }
             else -> null
         }

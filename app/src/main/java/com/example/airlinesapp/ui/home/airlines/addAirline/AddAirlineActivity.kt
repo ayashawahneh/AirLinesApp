@@ -16,15 +16,14 @@ import javax.inject.Inject
 import android.view.LayoutInflater
 import android.widget.NumberPicker
 import com.example.airlinesapp.databinding.YearPickerDialogBinding
-import com.example.airlinesapp.util.Constants.AIRLINE_RESULT_CODE
-import com.example.airlinesapp.util.Constants.FIRST_AIRLINE_YEAR
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.*
 
+@ExperimentalCoroutinesApi
 class AddAirlineActivity : DaggerAppCompatActivity() {
 
     private lateinit var binding: ActivityAddAirlineBinding
     private lateinit var yearPickerBinding: YearPickerDialogBinding
-
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModel by lazy {
@@ -34,18 +33,10 @@ class AddAirlineActivity : DaggerAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_add_airline)
-        binding.model = viewModel
-        binding.lifecycleOwner = this
 
+        setupView()
         setActivityActionBar()
-        nameObserving()
-        countryObserving()
-        headQuarterObserving()
-        websiteObserving()
-        sloganObserving()
-        isAirlineDataSentObserving()
-        buttonEnableObserving()
+        initViewModel()
         submitButtonClickEvent()
         establishedClickEvent()
     }
@@ -55,29 +46,90 @@ class AddAirlineActivity : DaggerAppCompatActivity() {
         return true
     }
 
-    private fun setActivityActionBar() {
-        val actionBar = supportActionBar
-        actionBar!!.title = resources.getString(R.string.new_airline)
-        actionBar.setDisplayHomeAsUpEnabled(true)
+    private fun setupView() {
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_add_airline)
+        with(binding) {
+            this.model = viewModel
+            this.lifecycleOwner = this@AddAirlineActivity
+        }
     }
 
-    private fun isAirlineDataSentObserving() {
-        viewModel.isSent.observe(this) {
-            if (it) {
-                setResult( AIRLINE_RESULT_CODE,
-                    HomeActivity.newIntentWithStringExtra(
-                        this,
-                        "${viewModel.name.value} was added successfully"
+    private fun setActivityActionBar() {
+        with(supportActionBar) {
+            this!!.title = resources.getString(R.string.new_airline)
+            this.setDisplayHomeAsUpEnabled(true)
+        }
+    }
+
+    private fun initViewModel() {
+        with(viewModel) {
+            this.name.observe(this@AddAirlineActivity) {
+                val validationResult = this.validateRequiredFields(it)
+                if (validationResult != null) {
+                    binding.nameContainer.helperText = resources.getString(validationResult)
+                } else {
+                    binding.nameContainer.helperText = null
+                }
+                this.setEnableSubmitButton()
+            }
+
+            this.country.observe(this@AddAirlineActivity) {
+                val validationResult = this.validateRequiredFields(it)
+                if (validationResult != null) {
+                    binding.countryContainer.helperText = resources.getString(validationResult)
+                } else {
+                    binding.countryContainer.helperText = null
+                }
+                this.setEnableSubmitButton()
+            }
+
+            this.headQuarter.observe(this@AddAirlineActivity) {
+                val validationResult = this.validateRequiredFields(it)
+                if (validationResult != null) {
+                    binding.headQuarterContainer.helperText = resources.getString(validationResult)
+                } else {
+                    binding.headQuarterContainer.helperText = null
+                }
+                this.setEnableSubmitButton()
+            }
+
+            this.website.observe(this@AddAirlineActivity) {
+                val validationResult = this.validateWebsite()
+                if (validationResult != null) {
+                    binding.websiteContainer.helperText = resources.getString(validationResult)
+                } else {
+                    binding.websiteContainer.helperText = null
+                }
+                this.setEnableSubmitButton()
+            }
+
+            this.slogan.observe(this@AddAirlineActivity) {
+                val validationResult = this.validateSlogan()
+                if (validationResult != null) {
+                    binding.sloganContainer.helperText = resources.getString(validationResult)
+                } else {
+                    binding.sloganContainer.helperText = null
+                }
+                this.setEnableSubmitButton()
+            }
+
+            this.isSent.observe(this@AddAirlineActivity) {
+                if (it) {
+                    setResult(
+                        HomeActivity.AIRLINE_RESULT_CODE,
+                        HomeActivity.newIntentWithStringExtra(
+                            this@AddAirlineActivity,
+                            "${this.name.value} ${resources.getString(R.string.was_added_successfully)}"
+                        )
                     )
-                )
-                finish()
-            } else {
-                Toast.makeText(
-                    this,
-                    resources.getString(R.string.error_sending_data),
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
+                    finish()
+                } else {
+                    Toast.makeText(
+                        this@AddAirlineActivity,
+                        resources.getString(R.string.error_sending_data),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }
@@ -92,73 +144,34 @@ class AddAirlineActivity : DaggerAppCompatActivity() {
         }
     }
 
-    private fun buttonEnableObserving() {
-        viewModel.enableSubmitButton.observe(this) {
-            binding.submitButton.isEnabled = it
-        }
-    }
-
-    private fun nameObserving() {
-        viewModel.name.observe(this) {
-            binding.nameContainer.helperText = viewModel.validateRequiredFields(it)
-            viewModel.setEnableSubmitButton()
-        }
-    }
-
-    private fun countryObserving() {
-        viewModel.country.observe(this) {
-            binding.countryContainer.helperText = viewModel.validateRequiredFields(it)
-            viewModel.setEnableSubmitButton()
-        }
-    }
-
-    private fun headQuarterObserving() {
-        viewModel.headQuarter.observe(this) {
-            binding.headQuarterContainer.helperText = viewModel.validateRequiredFields(it)
-            viewModel.setEnableSubmitButton()
-        }
-    }
-
-    private fun websiteObserving() {
-        viewModel.website.observe(this) {
-            binding.websiteContainer.helperText = viewModel.validateWebsite()
-            viewModel.setEnableSubmitButton()
-        }
-    }
-
-    private fun sloganObserving() {
-        viewModel.slogan.observe(this) {
-            binding.sloganContainer.helperText = viewModel.validateSlogan()
-            viewModel.setEnableSubmitButton()
-        }
-    }
-
     private fun showYearPickerDialog() {
         val currentYear = Calendar.getInstance().get(Calendar.YEAR)
         val dialog = AlertDialog.Builder(this).create()
+
         yearPickerBinding = YearPickerDialogBinding.inflate(LayoutInflater.from(this))
-
         dialog.setView(yearPickerBinding.root)
+        dialog.setTitle(resources.getString(R.string.year_picker_title))
 
-        dialog.setTitle("Year Picker")
-        yearPickerBinding.yearPicker.minValue = FIRST_AIRLINE_YEAR
-        yearPickerBinding.yearPicker.maxValue = currentYear
-        yearPickerBinding.yearPicker.value = currentYear
-
-        yearPickerBinding.yearPicker.wrapSelectorWheel = false
-        yearPickerBinding.yearPicker.descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
-        yearPickerBinding.buttonSet.setOnClickListener {
-            binding.establishedEditText.setText(yearPickerBinding.yearPicker.value.toString())
-            dialog.dismiss()
+        with(yearPickerBinding) {
+            this.yearPicker.minValue = FIRST_AIRLINE_YEAR
+            this.yearPicker.maxValue = currentYear
+            this.yearPicker.value = currentYear
+            this.yearPicker.wrapSelectorWheel = false
+            this.yearPicker.descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
+            this.buttonSet.setOnClickListener {
+                binding.establishedEditText.setText(this.yearPicker.value.toString())
+                dialog.dismiss()
+            }
+            this.buttonCancel.setOnClickListener {
+                dialog.dismiss()
+            }
+            dialog.show()
         }
-
-        yearPickerBinding.buttonCancel.setOnClickListener {
-            dialog.dismiss()
-        }
-        dialog.show()
     }
 
     companion object {
+
+        private const val FIRST_AIRLINE_YEAR = 1919
 
         fun newIntent(context: Context) =
             Intent(context, AddAirlineActivity::class.java)

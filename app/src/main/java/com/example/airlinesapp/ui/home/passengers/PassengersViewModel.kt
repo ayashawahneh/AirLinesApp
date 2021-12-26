@@ -3,8 +3,8 @@ package com.example.airlinesapp.ui.home.passengers
 import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.PagingData
+import com.example.airlinesapp.R
 import com.example.airlinesapp.models.Passenger
-import com.example.airlinesapp.util.Constants.CHECK_NETWORK_ERROR
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 import com.example.airlinesapp.di.network.Repository
@@ -15,11 +15,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class PassengersViewModel @Inject constructor(private val repository: Repository) :
     ViewModel() {
     var isLoading = MutableLiveData<Boolean>()
-    var networkState = MutableLiveData<String>()
+    var networkState = MutableLiveData<Int>()
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     val passengersList = MutableLiveData<PagingData<Passenger>>()
     val isDeleted = MutableLiveData<Boolean>()
     val searchText = MutableLiveData("")
+    val isVisibleStateTextView = MutableLiveData<Boolean>()
 
     init {
         getPassengers()
@@ -48,7 +49,9 @@ class PassengersViewModel @Inject constructor(private val repository: Repository
     }
 
     private fun getPassengers() {
+        networkState.value = R.string.LOADING
         isLoading.value = true
+        isVisibleStateTextView.value = true
         compositeDisposable.add(
             repository.getPassengers(searchText.value!!)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -56,9 +59,11 @@ class PassengersViewModel @Inject constructor(private val repository: Repository
                     {
                         passengersList.value = it
                         isLoading.value = false
+                        isVisibleStateTextView.value = false
                     },
                     {
-                        networkState.value = CHECK_NETWORK_ERROR
+                        networkState.value = R.string.CHECK_NETWORK_ERROR
+                        isVisibleStateTextView.value = true
                         isLoading.value = false
                     }
                 )

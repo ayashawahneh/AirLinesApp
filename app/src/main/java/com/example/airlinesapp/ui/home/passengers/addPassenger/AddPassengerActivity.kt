@@ -17,7 +17,6 @@ import javax.inject.Inject
 import android.widget.AdapterView.OnItemClickListener
 import com.example.airlinesapp.models.AirlineWithFavoriteFlag
 import com.example.airlinesapp.ui.home.HomeActivity
-import com.example.airlinesapp.util.Constants.PASSENGER_RESULT_CODE
 import kotlinx.android.synthetic.main.activity_add_passenger.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -40,19 +39,21 @@ class AddPassengerActivity : DaggerAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_add_passenger)
-        binding.model = addPassengerViewModel
-        binding.airlineViewModel = airlinesViewModel
-        binding.lifecycleOwner = this
 
+        setupView()
         setActivityActionBar()
+        initAddPassengerViewModel()
         fillAirlineDropdownList()
-        passengerNameObserving()
-        airlineDropdownListObserving()
-        buttonEnableObserving()
-        isPassengerDataSentObserving()
-        networkStateObserving()
         buttonClickEvent()
+    }
+
+    private fun setupView() {
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_add_passenger)
+        with(binding) {
+            this.model = addPassengerViewModel
+            this.airlineViewModel = airlinesViewModel
+            this.lifecycleOwner = this@AddPassengerActivity
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -61,9 +62,11 @@ class AddPassengerActivity : DaggerAppCompatActivity() {
     }
 
     private fun setActivityActionBar() {
-        val actionBar = supportActionBar
-        actionBar!!.title = resources.getString(R.string.new_passenger)
-        actionBar.setDisplayHomeAsUpEnabled(true)
+        with(supportActionBar) {
+            this!!.title = resources.getString(R.string.new_passenger)
+            this.setDisplayHomeAsUpEnabled(true)
+        }
+
     }
 
     private fun fillAirlineDropdownList() {
@@ -79,59 +82,54 @@ class AddPassengerActivity : DaggerAppCompatActivity() {
             })
     }
 
-    private fun networkStateObserving() {
-        airlinesViewModel.networkState.observe(this) {
-            Toast.makeText(this, it, Toast.LENGTH_SHORT)
-                .show()
-        }
-    }
+    private fun initAddPassengerViewModel() {
+        with(addPassengerViewModel) {
+            this.passengerName.observe(this@AddPassengerActivity) {
+                val validationResult = this.validatePassengerName()
+                if (validationResult != null) {
+                    binding.passengerNameContainer.helperText =
+                        resources.getString(validationResult)
+                } else {
+                    binding.passengerNameContainer.helperText = null
+                }
+                this.setEnableSubmitButton()
+            }
 
-    private fun buttonEnableObserving() {
-        addPassengerViewModel.enableSubmitButton.observe(this) {
-            binding.submitButton.isEnabled = it
-        }
-    }
+            this.airlineName.observe(this@AddPassengerActivity) {
+                val validationResult = this.validateAirlineName()
+                if (validationResult != null) {
+                    binding.airlineNameContainer.helperText = resources.getString(validationResult)
+                } else {
+                    binding.airlineNameContainer.helperText = null
+                }
+                this.setEnableSubmitButton()
+            }
 
-    private fun airlineDropdownListObserving() {
-        addPassengerViewModel.airlineName.observe(this) {
-            binding.airlineNameContainer.helperText = addPassengerViewModel.validateAirlineName()
-            addPassengerViewModel.setEnableSubmitButton()
-        }
-    }
-
-    private fun passengerNameObserving() {
-        addPassengerViewModel.passengerName.observe(this) {
-            binding.passengerNameContainer.helperText =
-                addPassengerViewModel.validatePassengerName()
-            addPassengerViewModel.setEnableSubmitButton()
+            this.isSent.observe(this@AddPassengerActivity) {
+                if (it) {
+                    setResult(
+                        HomeActivity.PASSENGER_RESULT_CODE,
+                        HomeActivity.newIntentWithStringExtra(
+                            this@AddPassengerActivity,
+                            "${this.passengerName.value} ${resources.getString(R.string.was_added_successfully)} ${this.airlineName.value}"
+                        )
+                    )
+                    finish()
+                } else {
+                    Toast.makeText(
+                        this@AddPassengerActivity,
+                        resources.getString(R.string.error_sending_data),
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                }
+            }
         }
     }
 
     private fun buttonClickEvent() {
         binding.submitButton.setOnClickListener {
             addPassengerViewModel.addPassenger()
-        }
-    }
-
-    private fun isPassengerDataSentObserving() {
-        addPassengerViewModel.isSent.observe(this) {
-            if (it) {
-                setResult(
-                    PASSENGER_RESULT_CODE,
-                    HomeActivity.newIntentWithStringExtra(
-                        this,
-                        "${addPassengerViewModel.passengerName.value} was added successfully to ${addPassengerViewModel.airlineName.value}"
-                    )
-                )
-                finish()
-            } else {
-                Toast.makeText(
-                    this,
-                    resources.getString(R.string.error_sending_data),
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
-            }
         }
     }
 

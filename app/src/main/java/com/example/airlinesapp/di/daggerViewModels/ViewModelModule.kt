@@ -9,7 +9,9 @@ import com.example.airlinesapp.ui.home.passengers.editPassenger.EditPassengerVie
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @Module
 abstract class ViewModelModule {
 
@@ -20,13 +22,13 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(PassengersViewModel::class)
-    internal abstract fun bindPassengersViewModel(viewModel: PassengersViewModel): ViewModel
+    @ViewModelKey(AddAirlineViewModel::class)
+    internal abstract fun bindAddAirlineViewModel(viewModel: AddAirlineViewModel): ViewModel
 
     @Binds
     @IntoMap
-    @ViewModelKey(AddAirlineViewModel::class)
-    internal abstract fun bindAddAirlineViewModel(viewModel: AddAirlineViewModel): ViewModel
+    @ViewModelKey(PassengersViewModel::class)
+    internal abstract fun bindPassengersViewModel(viewModel: PassengersViewModel): ViewModel
 
     @Binds
     @IntoMap

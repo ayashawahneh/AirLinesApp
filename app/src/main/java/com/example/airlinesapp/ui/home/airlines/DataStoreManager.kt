@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.rxjava2.rxPreferencesDataStore
-import com.example.airlinesapp.util.Constants.FAVORITE_AIRLINE_DATASTORE
 import io.reactivex.Observable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
@@ -40,6 +39,7 @@ class DataStoreManager @Inject constructor(val context: Context) {
 
     companion object {
 
-        val AIRLINE_IDS = stringSetPreferencesKey("AIRLINE_IDS")
+        private const val FAVORITE_AIRLINE_DATASTORE = "datastore"
+        private val AIRLINE_IDS = stringSetPreferencesKey("AIRLINE_IDS")
     }
 }

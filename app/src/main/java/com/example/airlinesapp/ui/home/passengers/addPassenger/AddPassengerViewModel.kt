@@ -3,6 +3,7 @@ package com.example.airlinesapp.ui.home.passengers.addPassenger
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.airlinesapp.R
 import com.example.airlinesapp.di.network.Repository
 import com.example.airlinesapp.models.AirLine
 import com.example.airlinesapp.models.PassengerPost
@@ -10,6 +11,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
+
 @ExperimentalCoroutinesApi
 class AddPassengerViewModel @Inject constructor(private val repository: Repository) :
     ViewModel() {
@@ -26,21 +28,21 @@ class AddPassengerViewModel @Inject constructor(private val repository: Reposito
         compositeDisposable.clear()
     }
 
-    fun validatePassengerName(): String? {
+    fun validatePassengerName(): Int? {
         return when {
-            passengerName.value == null || passengerName.value == "" -> {
-                "Required"
+            passengerName.value.isNullOrEmpty()-> {
+                R.string.required
             }
             passengerName.value.toString().length < 3 -> {
-                "Too short"
+                R.string.too_short
             }
             else -> null
         }
     }
 
-    fun validateAirlineName(): String? {
+    fun validateAirlineName(): Int? {
         return if (airlineName.value == null || airlineName.value == "")
-            "Required"
+            R.string.required
         else
             null
     }
@@ -53,7 +55,7 @@ class AddPassengerViewModel @Inject constructor(private val repository: Reposito
     }
 
     fun addPassenger() {
-        if (trips.value == null || trips.value == "")
+        if (trips.value.isNullOrEmpty())
             trips.value = "0"
 
         val passengerData = PassengerPost(

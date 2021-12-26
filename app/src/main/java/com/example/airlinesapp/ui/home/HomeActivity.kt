@@ -1,5 +1,6 @@
 package com.example.airlinesapp.ui.home
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -16,8 +17,6 @@ import com.example.airlinesapp.R
 import com.example.airlinesapp.databinding.ActivityHomeBinding
 import com.example.airlinesapp.ui.home.airlines.addAirline.AddAirlineActivity
 import com.example.airlinesapp.ui.home.passengers.addPassenger.AddPassengerActivity
-import com.example.airlinesapp.util.Constants.AIRLINE_RESULT_CODE
-import com.example.airlinesapp.util.Constants.PASSENGER_RESULT_CODE
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -32,14 +31,13 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
 
-        navController = Navigation.findNavController(this, R.id.hostFragment)
-        binding.bottomNavigationView.setupWithNavController(navController)
-
         setupAddFloatingButton()
         launchActivity()
     }
 
     private fun setupAddFloatingButton() {
+        navController = Navigation.findNavController(this, R.id.hostFragment)
+        binding.bottomNavigationView.setupWithNavController(navController)
         binding.floatingActionButton.setOnClickListener {
             if (navController.currentDestination?.label.toString() == "fragment_airlines") {
                 launcher.launch(AddAirlineActivity.newIntent(this))
@@ -87,11 +85,13 @@ class HomeActivity : AppCompatActivity() {
 
     companion object {
 
-        private val EXTRA_HOME =
-            HomeActivity::class.java.name + "_HOME_EXTRA"
+        const val AIRLINE_RESULT_CODE = 123
+        const val PASSENGER_RESULT_CODE = 321
+        private val EXTRA_HOME = HomeActivity::class.java.name + "_HOME_EXTRA"
 
         fun newIntentWithStringExtra(context: Context, stringExtra: String) =
             Intent(context, HomeActivity::class.java)
                 .putExtra(EXTRA_HOME, stringExtra)
+
     }
 }

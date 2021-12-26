@@ -30,4 +30,14 @@
     <string name="deleted_successfully">Passenger data deleted successfully.</string>
     <string name="error_deleting">Error deleting, try again later!</string>
     <string name="search">Search</string>
+    <string name="LOADING">Loading</string>
+    <string name="CHECK_NETWORK_ERROR">Check your network connection!</string>
+    <string name="EMPTY_LIST">No data to view</string>
+    <string name="EMPTY_SEARCH">No Result Found</string>
+    <string name="too_short">Too short</string>
+    <string name="invalid_website">Invalid Website</string>
+    <string name="required">Required</string>
+    <string name="year_picker_title">Select a Year</string>
+    <string name="updated_successfully">updated successfully</string>
+    <string name="was_added_successfully">was added successfully</string>
 </resources>
