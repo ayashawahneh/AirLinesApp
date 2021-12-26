@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.airlinesapp.R
 import com.example.airlinesapp.di.network.Repository
 import com.example.airlinesapp.models.AirLine
+import com.example.airlinesapp.models.AirlineWithFavoriteFlag
 import com.example.airlinesapp.models.PassengerPost
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -23,6 +24,14 @@ class EditPassengerViewModel @Inject constructor(private val repository: Reposit
     val enableSubmitButton = MutableLiveData(false)
     val isSent = MutableLiveData<Boolean>()
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
+    var isLoading = MutableLiveData<Boolean>()
+    val isVisibleStateTextView = MutableLiveData<Boolean>()
+    var networkState = MutableLiveData<Int>()
+    val airlinesLiveData = MutableLiveData<List<AirlineWithFavoriteFlag>>()
+
+    init {
+        getAirlinesList()
+    }
 
     override fun onCleared() {
         super.onCleared()
@@ -31,7 +40,7 @@ class EditPassengerViewModel @Inject constructor(private val repository: Reposit
 
     fun validatePassengerName(): Int? {
         return when {
-            passengerName.value.isNullOrEmpty()-> {
+            passengerName.value.isNullOrEmpty() -> {
                 R.string.required
             }
             passengerName.value.toString().length < 3 -> {
@@ -56,7 +65,7 @@ class EditPassengerViewModel @Inject constructor(private val repository: Reposit
     }
 
     fun editPassenger() {
-        if (trips.value.isNullOrEmpty())
+        if (trips.value.isNullOrEmpty() || trips.value.equals("null"))
             trips.value = "0"
 
         val passengerData = PassengerPost(
@@ -78,5 +87,31 @@ class EditPassengerViewModel @Inject constructor(private val repository: Reposit
                         }
                     )
             )
+    }
+
+    private fun getAirlinesList() {
+        networkState.value = R.string.LOADING
+        isLoading.value = true
+        isVisibleStateTextView.value = true
+        compositeDisposable.add(
+            repository.getAirlines()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    {
+                        this.airlinesLiveData.value = it
+                        isLoading.value = false
+                        isVisibleStateTextView.value = false
+                        if (it.isEmpty()) {
+                            networkState.value = R.string.EMPTY_LIST
+                            isVisibleStateTextView.value = true
+                        }
+                    },
+                    {
+                        isLoading.value = false
+                        isVisibleStateTextView.value = true
+                        networkState.value = R.string.CHECK_NETWORK_ERROR
+                    }
+                )
+        )
     }
 }

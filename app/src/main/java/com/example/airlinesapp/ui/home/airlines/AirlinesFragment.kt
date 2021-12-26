@@ -114,6 +114,7 @@ class AirlinesFragment : DaggerFragment(R.layout.fragment_airlines) {
             this.mappedSearchedText.observe(viewLifecycleOwner) {
                 airlinesListAdapter.submitList(it)
             }
+
             this.favoriteAirlinesList.observe(viewLifecycleOwner) {
                 this.updateAirlineIdsInDataStore()
             }

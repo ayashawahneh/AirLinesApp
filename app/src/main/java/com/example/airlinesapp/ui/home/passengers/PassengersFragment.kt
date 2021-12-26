@@ -41,18 +41,20 @@ class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
         )
     }
     private val showDialogConfirmation: (Passenger) -> Unit = {
-        MaterialAlertDialogBuilder(this.requireContext())
-            .setTitle(resources.getString(R.string.delete_dialog_title))
-            .setMessage(resources.getString(R.string.delete_dialog_message))
-            .setNegativeButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .setPositiveButton(
-                resources.getString(R.string.confirm)
-            ) { _, _ ->
-                passengersViewModel.deletePassenger(it.id)
-            }
-            .show()
+        if(it.id != null){
+            MaterialAlertDialogBuilder(this.requireContext())
+                .setTitle(resources.getString(R.string.delete_dialog_title))
+                .setMessage(resources.getString(R.string.delete_dialog_message))
+                .setNegativeButton(resources.getString(R.string.cancel)) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .setPositiveButton(
+                    resources.getString(R.string.confirm)
+                ) { _, _ ->
+                    passengersViewModel.deletePassenger(it.id)
+                }
+                .show()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

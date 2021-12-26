@@ -8,13 +8,13 @@ import java.math.BigInteger
 @Parcelize
 data class Passenger(
     @SerializedName("_id")
-    val id: String,
+    val id: String?,
     @SerializedName("name")
     val name: String?="",
     @SerializedName("trips")
-    val trips: BigInteger,
+    val trips: BigInteger?,
     @SerializedName("airline")
-    val airline: List<AirLine>,
+    val airline: List<AirLine>?,
     @SerializedName("__v")
-    val v: Int
+    val v: Int?
 ) : Parcelable

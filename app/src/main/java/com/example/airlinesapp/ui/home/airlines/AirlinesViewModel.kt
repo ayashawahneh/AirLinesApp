@@ -27,8 +27,16 @@ class AirlinesViewModel @Inject constructor(private val repository: Repository) 
             searchedAirlinesList.value = airlinesLiveData.value?.filter {
                 it.airline.name.contains(searchText.value.toString(), true)
             }
+            if (searchedAirlinesList.value?.isEmpty()!!) {
+                networkState.value = R.string.EMPTY_SEARCH
+                isVisibleStateTextView.value = true
+            } else {
+                isVisibleStateTextView.value = false
+            }
             searchedAirlinesList
+
         } else {
+            isVisibleStateTextView.value = false
             airlinesLiveData
         }
     }

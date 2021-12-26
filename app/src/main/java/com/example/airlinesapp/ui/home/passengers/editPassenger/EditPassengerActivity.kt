@@ -15,7 +15,6 @@ import com.example.airlinesapp.models.AirLine
 import com.example.airlinesapp.models.AirlineWithFavoriteFlag
 import com.example.airlinesapp.models.Passenger
 import com.example.airlinesapp.ui.home.HomeActivity
-import com.example.airlinesapp.ui.home.airlines.AirlinesViewModel
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_add_passenger.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,10 +30,6 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    private val airlinesViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)
-            .get(AirlinesViewModel::class.java)
-    }
     private val editPassengerViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)
             .get(EditPassengerViewModel::class.java)
@@ -59,7 +54,6 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_passenger)
         with(binding) {
             this.model = editPassengerViewModel
-            this.airlineViewModel = airlinesViewModel
             this.lifecycleOwner = this@EditPassengerActivity
         }
     }
@@ -124,7 +118,7 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
     }
 
     private fun fillAirlineDropdownList() {
-        airlinesViewModel.airlinesLiveData.observe(this,
+        editPassengerViewModel.airlinesLiveData.observe(this,
             { airlinesList ->
                 arrayAdapter = ArrayAdapter(this, R.layout.dropdown_item, airlinesList)
                 binding.airlineAutoCompleteTextView.setAdapter(arrayAdapter)

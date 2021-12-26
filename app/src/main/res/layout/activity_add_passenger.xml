@@ -8,10 +8,6 @@
         <import type="android.view.View" />
 
         <variable
-            name="airlineViewModel"
-            type="com.example.airlinesapp.ui.home.airlines.AirlinesViewModel" />
-
-        <variable
             name="model"
             type="com.example.airlinesapp.ui.home.passengers.addPassenger.AddPassengerViewModel" />
     </data>
@@ -96,15 +92,15 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="3dp"
                 android:indeterminateTint="@color/primary"
-                android:visibility="@{airlineViewModel.isLoading ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{model.isLoading ? View.VISIBLE : View.GONE}" />
 
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:setText="@{airlineViewModel.networkState}"
-                android:visibility="@{airlineViewModel.isVisibleStateTextView ? View.VISIBLE : View.GONE}" />
+                android:setText="@{model.networkState}"
+                android:visibility="@{model.isVisibleStateTextView ? View.VISIBLE : View.GONE}" />
 
             <Space
                 android:layout_width="match_parent"
