@@ -8,6 +8,7 @@ import com.example.airlinesapp.util.Constants.PASSENGERS_PER_PAGE
 import io.reactivex.Single
 import retrofit2.http.*
 
+
 interface ApiService {
 
     @GET("airlines")

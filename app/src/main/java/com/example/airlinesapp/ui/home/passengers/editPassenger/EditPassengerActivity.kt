@@ -128,7 +128,7 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
                     PASSENGER_RESULT_CODE,
                     HomeActivity.newIntentWithStringExtra(
                         this,
-                       "${editPassengerViewModel.passengerName.value.toString()} updated successfully"
+                        "${editPassengerViewModel.passengerName.value.toString()} updated successfully"
                     )
                 )
                 finish()

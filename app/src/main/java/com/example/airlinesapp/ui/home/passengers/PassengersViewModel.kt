@@ -10,6 +10,7 @@ import com.example.airlinesapp.util.Constants.CHECK_NETWORK_ERROR
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 import com.example.airlinesapp.di.network.ApiRepository
+import io.reactivex.android.schedulers.AndroidSchedulers
 
 
 class PassengersViewModel @Inject constructor(private val repository: ApiRepository) :
@@ -30,6 +31,7 @@ class PassengersViewModel @Inject constructor(private val repository: ApiReposit
         compositeDisposable.add(
             repository
                 .getPassengers()
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
                         passengersList.value = it

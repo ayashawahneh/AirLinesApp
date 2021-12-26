@@ -164,4 +164,3 @@ class AddAirlineActivity : DaggerAppCompatActivity() {
             Intent(context, AddAirlineActivity::class.java)
     }
 }
-

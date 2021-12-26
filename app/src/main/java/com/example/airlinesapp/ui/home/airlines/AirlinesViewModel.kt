@@ -34,7 +34,7 @@ class AirlinesViewModel @Inject constructor(private val apiRepository: ApiReposi
         compositeDisposable.clear()
     }
 
-   private fun getAirlinesList() {
+    private fun getAirlinesList() {
         networkState.value = LOADING
         isLoading.value = true
         compositeDisposable.add(
