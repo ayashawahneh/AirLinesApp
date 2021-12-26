@@ -8,13 +8,12 @@ import android.os.Handler
 import android.os.Looper
 import com.example.airlinesapp.R
 import com.example.airlinesapp.ui.home.HomeActivity
-import com.example.airlinesapp.util.Constants.SPLASHING_TIME
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
 
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
@@ -24,5 +23,9 @@ class SplashActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }, SPLASHING_TIME.toLong())
+    }
+
+    companion object{
+        private const val SPLASHING_TIME = 2000
     }
 }

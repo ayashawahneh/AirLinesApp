@@ -1,141 +1,68 @@
-package com.example.airlinesapp.ui.home.passengers.addPassenger
+package com.example.airlinesapp.ui.home.passengers
 
-import android.content.Context
-import android.content.Intent
-import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.Toast
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
-import com.example.airlinesapp.R
-import com.example.airlinesapp.databinding.ActivityAddPassengerBinding
-import com.example.airlinesapp.di.daggerViewModels.ViewModelFactory
-import com.example.airlinesapp.models.AirLine
-import com.example.airlinesapp.ui.home.airlines.AirlinesViewModel
-import dagger.android.support.DaggerAppCompatActivity
-import javax.inject.Inject
-import android.widget.AdapterView.OnItemClickListener
-import com.example.airlinesapp.models.AirlineWithFavoriteFlag
-import com.example.airlinesapp.ui.home.HomeActivity
-import kotlinx.android.synthetic.main.activity_add_passenger.view.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
+import com.example.airlinesapp.databinding.SinglePassengerViewBinding
+import com.example.airlinesapp.models.Passenger
+import com.chauthai.swipereveallayout.ViewBinderHelper
 
-@ExperimentalCoroutinesApi
-class AddPassengerActivity : DaggerAppCompatActivity() {
+class PassengersRecyclerViewPagingAdapter(
+    private val editListener: (Passenger) -> Unit,
+    private val deleteListener: (Passenger) -> Unit
+) :
+    PagingDataAdapter<Passenger, PassengersRecyclerViewPagingAdapter.PassengersViewHolder>(
+        PassengersComparator
+    ) {
+    private val viewBinderHelper = ViewBinderHelper()
+    private lateinit var view: SinglePassengerViewBinding
 
-    private lateinit var binding: ActivityAddPassengerBinding
-    private lateinit var arrayAdapter: ArrayAdapter<AirlineWithFavoriteFlag>
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-    private val airlinesViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)
-            .get(AirlinesViewModel::class.java)
-    }
-    private val addPassengerViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)
-            .get(AddPassengerViewModel::class.java)
+    override fun onBindViewHolder(holder: PassengersViewHolder, position: Int) {
+        viewBinderHelper.setOpenOnlyOne(true)
+        viewBinderHelper.bind(view.swipeLayout, getItem(position)?.id)
+        viewBinderHelper.closeLayout(getItem(position)?.id)
+        getItem(position)?.let { holder.bind(it) }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setupView()
-        setActivityActionBar()
-        initAddPassengerViewModel()
-        fillAirlineDropdownList()
-        buttonClickEvent()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PassengersViewHolder {
+        view = SinglePassengerViewBinding
+            .inflate(
+                LayoutInflater.from(parent.context),
+                parent, false
+            )
+        return PassengersViewHolder(view, editListener, deleteListener)
     }
 
-    private fun setupView() {
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_add_passenger)
-        with(binding) {
-            this.model = addPassengerViewModel
-            this.airlineViewModel = airlinesViewModel
-            this.lifecycleOwner = this@AddPassengerActivity
-        }
-    }
+    class PassengersViewHolder(
+        private val view: SinglePassengerViewBinding,
+        private val editListener: (Passenger) -> Unit,
+        private val deleteListener: (Passenger) -> Unit
+    ) :
+        RecyclerView.ViewHolder(view.root) {
+        fun bind(item: Passenger) = with(view) {
+            passenger = item
 
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
-    }
-
-    private fun setActivityActionBar() {
-        with(supportActionBar) {
-            this!!.title = resources.getString(R.string.new_passenger)
-            this.setDisplayHomeAsUpEnabled(true)
-        }
-
-    }
-
-    private fun fillAirlineDropdownList() {
-        airlinesViewModel.airlinesLiveData.observe(this,
-            { airlinesList ->
-                arrayAdapter = ArrayAdapter(this, R.layout.dropdown_item, airlinesList)
-                binding.airlineAutoCompleteTextView.setAdapter(arrayAdapter)
-                binding.airlineNameContainer.airlineAutoCompleteTextView.onItemClickListener =
-                    OnItemClickListener { _, _, position, _ ->
-                        val selectedValue: AirLine? = arrayAdapter.getItem(position)?.airline
-                        addPassengerViewModel.airlineObject.value = selectedValue
-                    }
-            })
-    }
-
-    private fun initAddPassengerViewModel() {
-        with(addPassengerViewModel) {
-            this.passengerName.observe(this@AddPassengerActivity) {
-                val validationResult = this.validatePassengerName()
-                if (validationResult != null) {
-                    binding.passengerNameContainer.helperText =
-                        resources.getString(validationResult)
-                } else {
-                    binding.passengerNameContainer.helperText = null
+            with(editButton) {
+                setOnClickListener {
+                    editListener(item)
                 }
-                this.setEnableSubmitButton()
             }
 
-            this.airlineName.observe(this@AddPassengerActivity) {
-                val validationResult = this.validateAirlineName()
-                if (validationResult != null) {
-                    binding.airlineNameContainer.helperText = resources.getString(validationResult)
-                } else {
-                    binding.airlineNameContainer.helperText = null
-                }
-                this.setEnableSubmitButton()
-            }
-
-            this.isSent.observe(this@AddPassengerActivity) {
-                if (it) {
-                    setResult(
-                        HomeActivity.PASSENGER_RESULT_CODE,
-                        HomeActivity.newIntentWithStringExtra(
-                            this@AddPassengerActivity,
-                            "${this.passengerName.value} was added successfully to ${this.airlineName.value}"
-                        )
-                    )
-                    finish()
-                } else {
-                    Toast.makeText(
-                        this@AddPassengerActivity,
-                        resources.getString(R.string.error_sending_data),
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
+            with(deleteButton) {
+                setOnClickListener {
+                    deleteListener(item)
                 }
             }
         }
     }
 
-    private fun buttonClickEvent() {
-        binding.submitButton.setOnClickListener {
-            addPassengerViewModel.addPassenger()
-        }
-    }
+    object PassengersComparator : DiffUtil.ItemCallback<Passenger>() {
+        override fun areItemsTheSame(oldItem: Passenger, newItem: Passenger) =
+            oldItem.id == newItem.id
 
-    companion object {
-
-        fun newIntent(context: Context) =
-            Intent(context, AddPassengerActivity::class.java)
+        override fun areContentsTheSame(oldItem: Passenger, newItem: Passenger) =
+            oldItem == newItem
     }
 }
