@@ -8,4 +8,5 @@
     <color name="secondaryDark">#a88517</color>
     <color name="onPrimary">#FFFFFFFF</color>
     <color name="onSecondary">#000000</color>
+    <color name="successGreen">#376e37</color>
 </resources>

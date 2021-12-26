@@ -13,6 +13,3 @@ fun loadImage(imageView: ImageView, url: String) {
         .apply(RequestOptions().fitCenter().placeholder(R.drawable.im_image_not_found))
         .into(imageView)
 }
-
-
-

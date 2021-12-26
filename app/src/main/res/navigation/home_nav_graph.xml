@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_nav_graph"
     app:startDestination="@id/airlinesFragment">
-
     <fragment
         android:id="@+id/airlinesFragment"
         android:name="com.example.airlinesapp.ui.home.airlines.AirlinesFragment"
@@ -15,4 +14,10 @@
         android:name="com.example.airlinesapp.ui.home.passengers.PassengersFragment"
         android:label="fragment_passengers"
         tools:layout="@layout/fragment_passengers" />
+    <action
+        android:id="@+id/action_global_passengersFragment"
+        app:destination="@id/passengersFragment" />
+    <action
+        android:id="@+id/action_global_airlinesFragment"
+        app:destination="@id/airlinesFragment" />
 </navigation>

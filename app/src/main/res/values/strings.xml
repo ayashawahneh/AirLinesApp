@@ -2,9 +2,31 @@
     <string name="app_name">AirLinesApp</string>
     <string name="airlines">Airlines</string>
     <string name="copyRight">© Reserved to @ Harri</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="passengers">Passengers</string>
     <string name="airline_image">airlineImage</string>
     <string name="add_new_item">Add New Item</string>
+    <string name="airline_name">Airline Name</string>
+    <string name="country">Country</string>
+    <string name="slogan">Slogan</string>
+    <string name="head_quarter">Head quarter</string>
+    <string name="website">WebSite</string>
+    <string name="established">Established</string>
+    <string name="submit">Submit</string>
+    <string name="save">Save</string>
+    <string name="passenger_name">Passenger Name</string>
+    <string name="trips">Trips Number(by default zero)</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="delete_dialog_title">Delete Passenger</string>
+    <string name="delete_dialog_message">Are you sure you want to delete this passenger?</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="set">Set</string>
+    <string name="error_sending_data">Error sending data, try again later!</string>
+    <string name="new_airline">New Airline</string>
+    <string name="new_passenger">New Passenger</string>
+    <string name="edit_passenger">Edit Passenger</string>
+    <string name="deleted_successfully">Passenger data deleted successfully.</string>
+    <string name="error_deleting">Error deleting, try again later!</string>
 </resources>

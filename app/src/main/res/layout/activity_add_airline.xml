@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.example.airlinesapp.ui.home.airlines.addAirline.AddAirlineViewModel" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical"
+        android:padding="@dimen/page_padding"
+        tools:context=".ui.home.airlines.addAirline.AddAirlineActivity">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/nameContainer"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/box_margin_bottom"
+                android:hint="@string/airline_name"
+                app:counterEnabled="true"
+                app:counterMaxLength="12"
+                app:helperText="Required"
+                app:helperTextTextColor="@color/design_default_color_error">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/nameEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/text_field_height"
+                    android:lines="1"
+                    android:maxLength="12"
+                    android:text="@={model.name}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/countryContainer"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/box_margin_bottom"
+                android:hint="@string/country"
+                app:counterEnabled="true"
+                app:counterMaxLength="12"
+                app:helperText="Required"
+                app:helperTextTextColor="@color/design_default_color_error">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/countryEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/text_field_height"
+                    android:maxLength="12"
+                    android:text="@={model.country}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/sloganContainer"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/box_margin_bottom"
+                android:hint="@string/slogan"
+                app:helperTextTextColor="@color/design_default_color_error">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/sloganEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/text_field_height"
+                    android:maxLength="38"
+                    android:text="@={model.slogan}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/headQuarterContainer"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/box_margin_bottom"
+                android:hint="@string/head_quarter"
+                app:helperText="Required"
+                app:helperTextTextColor="@color/design_default_color_error">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/headQuarterEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/text_field_height"
+                    android:text="@={model.headQuarter}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/websiteContainer"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/box_margin_bottom"
+                android:hint="@string/website"
+                app:helperTextTextColor="@color/design_default_color_error">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/websiteEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/text_field_height"
+                    android:text="@={model.website}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/establishedContainer"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/box_margin_bottom"
+                android:hint="@string/established"
+                app:helperTextTextColor="@color/design_default_color_error">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/establishedEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/text_field_height"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:inputType="none"
+                    android:maxLength="4"
+                    android:text="@={model.established}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/submitButton"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_field_height"
+                android:layout_weight="0"
+                android:backgroundTint="@color/secondary"
+                android:text="@string/submit"
+                android:textAllCaps="false" />
+
+        </LinearLayout>
+    </ScrollView>
+</layout>
