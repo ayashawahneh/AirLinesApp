@@ -30,7 +30,7 @@ class AddPassengerViewModel @Inject constructor(private val repository: Reposito
 
     fun validatePassengerName(): Int? {
         return when {
-            passengerName.value == null || passengerName.value == "" -> {
+            passengerName.value.isNullOrEmpty()-> {
                 R.string.required
             }
             passengerName.value.toString().length < 3 -> {
@@ -55,7 +55,7 @@ class AddPassengerViewModel @Inject constructor(private val repository: Reposito
     }
 
     fun addPassenger() {
-        if (trips.value == null || trips.value == "")
+        if (trips.value.isNullOrEmpty())
             trips.value = "0"
 
         val passengerData = PassengerPost(

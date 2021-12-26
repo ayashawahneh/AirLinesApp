@@ -82,8 +82,12 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
 
             /*-----------observing--------------------*/
             this.airlineName.observe(this@EditPassengerActivity) {
-                binding.airlineNameContainer.helperText =
-                    this.validateAirlineName()
+                val validationResult = this.validateAirlineName()
+                if (validationResult != null) {
+                    binding.airlineNameContainer.helperText = resources.getString(validationResult)
+                } else {
+                    binding.airlineNameContainer.helperText = null
+                }
                 this.setEnableSubmitButton()
             }
 
@@ -104,7 +108,7 @@ class EditPassengerActivity : DaggerAppCompatActivity() {
                         HomeActivity.PASSENGER_RESULT_CODE,
                         HomeActivity.newIntentWithStringExtra(
                             this@EditPassengerActivity,
-                            "${this.passengerName.value.toString()} updated successfully"
+                            "${this.passengerName.value.toString()} ${resources.getString(R.string.updated_successfully)}"
                         )
                     )
                     finish()

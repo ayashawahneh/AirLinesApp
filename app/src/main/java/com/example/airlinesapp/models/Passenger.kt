@@ -7,7 +7,6 @@ import java.math.BigInteger
 
 @Parcelize
 data class Passenger(
-
     @SerializedName("_id")
     val id: String,
     @SerializedName("name")

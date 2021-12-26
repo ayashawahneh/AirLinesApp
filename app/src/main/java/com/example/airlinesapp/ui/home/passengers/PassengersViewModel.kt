@@ -20,6 +20,7 @@ class PassengersViewModel @Inject constructor(private val repository: Repository
     val passengersList = MutableLiveData<PagingData<Passenger>>()
     val isDeleted = MutableLiveData<Boolean>()
     val searchText = MutableLiveData("")
+    val isVisibleStateTextView = MutableLiveData<Boolean>()
 
     init {
         getPassengers()
@@ -48,7 +49,9 @@ class PassengersViewModel @Inject constructor(private val repository: Repository
     }
 
     private fun getPassengers() {
+        networkState.value = R.string.LOADING
         isLoading.value = true
+        isVisibleStateTextView.value = true
         compositeDisposable.add(
             repository.getPassengers(searchText.value!!)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -56,9 +59,11 @@ class PassengersViewModel @Inject constructor(private val repository: Repository
                     {
                         passengersList.value = it
                         isLoading.value = false
+                        isVisibleStateTextView.value = false
                     },
                     {
                         networkState.value = R.string.CHECK_NETWORK_ERROR
+                        isVisibleStateTextView.value = true
                         isLoading.value = false
                     }
                 )

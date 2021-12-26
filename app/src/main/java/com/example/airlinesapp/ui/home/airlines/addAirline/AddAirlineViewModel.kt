@@ -9,9 +9,12 @@ import com.example.airlinesapp.di.network.Repository
 import com.example.airlinesapp.models.AirLine
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
-class AddAirlineViewModel @Inject constructor(private val repository: Repository) :
+@ExperimentalCoroutinesApi
+class AddAirlineViewModel
+@Inject constructor(private val repository: Repository) :
     ViewModel() {
     val name = MutableLiveData<String>()
     val country = MutableLiveData<String>()
@@ -39,7 +42,7 @@ class AddAirlineViewModel @Inject constructor(private val repository: Repository
     }
 
     fun validateSlogan(): Int? {
-        return if (slogan.value == null || slogan.value == "") {
+        return if (slogan.value.isNullOrEmpty()) {
             null
         } else {
             if (slogan.value.toString().length < 3) {
@@ -51,7 +54,7 @@ class AddAirlineViewModel @Inject constructor(private val repository: Repository
     }
 
     fun validateWebsite(): Int? {
-        return if (website.value == null || website.value == "") {
+        return if (website.value.isNullOrEmpty()) {
             null
         } else {
             if (!(Patterns.WEB_URL.matcher(website.value!!).matches())) {
@@ -64,7 +67,7 @@ class AddAirlineViewModel @Inject constructor(private val repository: Repository
 
     fun validateRequiredFields(str: String?): Int? {
         return when {
-            str == null || str == "" -> {
+            str.isNullOrEmpty() -> {
                 R.string.required
             }
             str.length < 3 -> {

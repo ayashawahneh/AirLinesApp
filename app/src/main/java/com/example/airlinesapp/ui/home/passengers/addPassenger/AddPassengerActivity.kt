@@ -111,7 +111,7 @@ class AddPassengerActivity : DaggerAppCompatActivity() {
                         HomeActivity.PASSENGER_RESULT_CODE,
                         HomeActivity.newIntentWithStringExtra(
                             this@AddPassengerActivity,
-                            "${this.passengerName.value} was added successfully to ${this.airlineName.value}"
+                            "${this.passengerName.value} ${resources.getString(R.string.was_added_successfully)} ${this.airlineName.value}"
                         )
                     )
                     finish()

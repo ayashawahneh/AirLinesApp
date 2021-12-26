@@ -31,7 +31,7 @@ class EditPassengerViewModel @Inject constructor(private val repository: Reposit
 
     fun validatePassengerName(): Int? {
         return when {
-            passengerName.value == null || passengerName.value == "" -> {
+            passengerName.value.isNullOrEmpty()-> {
                 R.string.required
             }
             passengerName.value.toString().length < 3 -> {
@@ -41,9 +41,9 @@ class EditPassengerViewModel @Inject constructor(private val repository: Reposit
         }
     }
 
-    fun validateAirlineName(): String? {
-        return if (airlineName.value == null || airlineName.value == "")
-            "Required"
+    fun validateAirlineName(): Int? {
+        return if (airlineName.value.isNullOrEmpty())
+            R.string.required
         else
             null
     }
@@ -56,7 +56,7 @@ class EditPassengerViewModel @Inject constructor(private val repository: Reposit
     }
 
     fun editPassenger() {
-        if (trips.value == null || trips.value == "")
+        if (trips.value.isNullOrEmpty())
             trips.value = "0"
 
         val passengerData = PassengerPost(
