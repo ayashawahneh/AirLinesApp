@@ -8,8 +8,9 @@ import com.example.airlinesapp.models.AirLine
 import com.example.airlinesapp.models.PassengerPost
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
-
+@ExperimentalCoroutinesApi
 class AddPassengerViewModel @Inject constructor(private val repository: Repository) :
     ViewModel() {
     val passengerName = MutableLiveData<String>()
@@ -67,7 +68,7 @@ class AddPassengerViewModel @Inject constructor(private val repository: Reposito
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {
-                            Log.d("addNewPas", it.name)
+                            Log.d("addNewPas", it.name.orEmpty())
                             isSent.value = true
                         },
                         {

@@ -34,10 +34,11 @@ class AirlinesFragment : DaggerFragment(R.layout.fragment_airlines) {
         airlinesViewModel.favoriteAirlinesList.value = favoritesIdsList
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentAirlinesBinding.bind(view)
-
+        setHasOptionsMenu(true)
 
         setActionBar()
         setupView()

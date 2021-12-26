@@ -25,7 +25,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
     lateinit var launcher: ActivityResultLauncher<Intent>
-    private set
+        private set
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {

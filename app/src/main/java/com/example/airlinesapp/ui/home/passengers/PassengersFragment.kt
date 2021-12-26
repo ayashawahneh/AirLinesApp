@@ -59,6 +59,7 @@ class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentPassengersBinding.bind(view)
+        setHasOptionsMenu(true)
 
         setActionBar()
         setupView()

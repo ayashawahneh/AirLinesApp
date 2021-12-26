@@ -8,8 +8,10 @@ import com.example.airlinesapp.di.network.Repository
 import com.example.airlinesapp.models.AirLine
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class AddAirlineViewModel @Inject constructor(private val repository: Repository) :
     ViewModel() {
     val name = MutableLiveData<String>()
