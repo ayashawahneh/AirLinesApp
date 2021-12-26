@@ -13,7 +13,6 @@ import com.example.airlinesapp.ui.home.airlines.DataStoreManager
 import com.example.airlinesapp.ui.home.passengers.PassengersDataSource
 import com.example.airlinesapp.util.Constants.PASSENGERS_PER_PAGE
 import io.reactivex.Flowable
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,9 +32,7 @@ class Repository @Inject constructor(
     }
 
     fun getFavoriteIdsFromDataStore(): MutableList<String>? {
-
         return dataStoreManager.getFavouriteIds().blockingFirst()?.toMutableList()
-
     }
 
     @SuppressLint("CheckResult")
@@ -62,7 +59,7 @@ class Repository @Inject constructor(
             .subscribeOn(Schedulers.io())
     }
 
-    fun getPassengers(): Flowable<PagingData<Passenger>> {
+    fun getPassengers(searchedText: String): Flowable<PagingData<Passenger>> {
         return Pager(
             config = PagingConfig(
                 pageSize = PASSENGERS_PER_PAGE,
@@ -71,7 +68,7 @@ class Repository @Inject constructor(
                 prefetchDistance = 5,
                 initialLoadSize = 40
             ),
-            pagingSourceFactory = { PassengersDataSource(apiService) }
+            pagingSourceFactory = { PassengersDataSource(apiService, searchedText) }
         ).flowable
     }
 

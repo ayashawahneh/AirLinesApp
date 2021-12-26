@@ -1,9 +1,13 @@
 package com.example.airlinesapp.ui.home.passengers
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -66,6 +70,62 @@ class PassengersFragment : DaggerFragment(R.layout.fragment_passengers) {
         networkStateObserving()
         observingPassengersList()
         observingPassengerDeleted()
+        searchTextObserving()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.search_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+
+        configureSearchView(menu)
+    }
+
+    @SuppressLint("CheckResult")
+    private fun configureSearchView(menu: Menu) {
+        val searchView = menu.findItem(R.id.search_view)?.actionView as SearchView
+
+        /* ----------- we can use rxjava too ----------- */
+        /*  searchView.findViewById<EditText>(androidx.appcompat.R.id.search_src_text).textChanges()
+            .skipInitialValue()
+            .debounce(500, TimeUnit.MILLISECONDS)
+            .doOnNext {
+                if (it.trim().toString().length >= 3)
+                    passengersViewModel.searchText.postValue(it.toString())
+            }
+            .filter {
+                it.trim().toString().length >= 3
+            }
+
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+
+            }, {
+            })   */
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null && newText.length > 2) {
+                    passengersViewModel.searchText.value = newText
+
+                } else {
+                    if (!passengersViewModel.searchText.value.isNullOrEmpty())
+                        passengersViewModel.searchText.value = ""
+                }
+
+                return true
+            }
+        })
+    }
+
+    private fun searchTextObserving() {
+        passengersViewModel.searchText.observe(viewLifecycleOwner) {
+            passengersViewModel.search()
+        }
     }
 
     private fun setActionBar() {

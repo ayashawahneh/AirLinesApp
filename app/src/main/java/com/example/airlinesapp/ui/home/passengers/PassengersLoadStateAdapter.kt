@@ -20,7 +20,6 @@ class PassengersLoadStateAdapter :
             if (loadState is LoadState.Loading) {
                 binding.progressBar.visibility = View.VISIBLE
             }
-
             if (loadState is LoadState.Error) {
                 binding.errorMessage.visibility = View.VISIBLE
                 binding.errorMessage.text = loadState.error.localizedMessage
@@ -37,6 +36,5 @@ class PassengersLoadStateAdapter :
         loadState: LoadState
     ) = PassengerLoadStateViewHolder(
         NetworkStateItemBinding.inflate(LayoutInflater.from(parent.context), parent, false),
-
-        )
+    )
 }
