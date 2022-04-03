@@ -1,4 +1,4 @@
-package com.example.airlinesapp.ui.home.airlines
+package com.example.airlinesapp.di.dataStore
 
 import android.content.Context
 import androidx.datastore.preferences.core.Preferences

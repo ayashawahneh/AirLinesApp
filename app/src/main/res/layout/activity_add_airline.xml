@@ -7,7 +7,7 @@
 
         <variable
             name="model"
-            type="com.example.airlinesapp.ui.home.airlines.addAirline.AddAirlineViewModel" />
+            type="com.example.airlinesapp.ui.home.airlines.add.AddAirlineViewModel" />
     </data>
 
     <ScrollView
@@ -17,7 +17,7 @@
         android:fitsSystemWindows="true"
         android:orientation="vertical"
         android:padding="@dimen/page_padding"
-        tools:context=".ui.home.airlines.addAirline.AddAirlineActivity">
+        tools:context=".ui.home.airlines.add.AddAirlineActivity">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,8 +41,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/text_field_height"
                     android:lines="1"
-                    android:maxLength="12"
-                    android:text="@={model.name}" />
+                    android:maxLength="12"/>
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -62,8 +61,7 @@
                     android:id="@+id/countryEditText"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/text_field_height"
-                    android:maxLength="12"
-                    android:text="@={model.country}" />
+                    android:maxLength="12"/>
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -80,8 +78,7 @@
                     android:id="@+id/sloganEditText"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/text_field_height"
-                    android:maxLength="38"
-                    android:text="@={model.slogan}" />
+                    android:maxLength="38" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -97,8 +94,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/headQuarterEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/text_field_height"
-                    android:text="@={model.headQuarter}" />
+                    android:layout_height="@dimen/text_field_height" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -113,8 +109,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/websiteEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/text_field_height"
-                    android:text="@={model.website}" />
+                    android:layout_height="@dimen/text_field_height"/>
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -134,8 +129,7 @@
                     android:cursorVisible="false"
                     android:focusable="false"
                     android:inputType="none"
-                    android:maxLength="4"
-                    android:text="@={model.established}" />
+                    android:maxLength="4"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <Space
@@ -149,7 +143,7 @@
                 android:layout_height="@dimen/text_field_height"
                 android:layout_weight="0"
                 android:backgroundTint="@color/secondary"
-                android:enabled="@{model.enableSubmitButton}"
+                android:enabled="@{model.enableSubmitButtonLiveData}"
                 android:text="@string/submit"
                 android:textAllCaps="false" />
 

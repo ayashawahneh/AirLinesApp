@@ -7,55 +7,50 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.airlinesapp.databinding.SingleAirlineViewBinding
-import com.example.airlinesapp.models.AirlineWithFavoriteFlag
+import com.example.airlinesapp.models.AirlineWithFavoriteFlagItem
 
 class AirlinesRecyclerViewListAdapter(
-    private val addToFavoriteListener: (String) -> Unit,
-    private val removeFromFavoriteListener: (String) -> Unit
+    private val addToFavoriteListener: (String, Int) -> Unit,
+    private val removeFromFavoriteListener: (String, Int) -> Unit
 ) :
-    ListAdapter<AirlineWithFavoriteFlag, AirlinesRecyclerViewListAdapter.AirlineViewHolder>(
+    ListAdapter<AirlineWithFavoriteFlagItem, AirlinesRecyclerViewListAdapter.AirlineViewHolder>(
         UserDiffCallBack()
     ) {
 
     class AirlineViewHolder(
-        val view: SingleAirlineViewBinding,
-        private val addToFavoriteListener: (String) -> Unit,
-        private val removeFromFavoriteListener: (String) -> Unit
+        private val viewBinding: SingleAirlineViewBinding,
+        private val addToFavoriteListener: (String, Int) -> Unit,
+        private val removeFromFavoriteListener: (String, Int) -> Unit
     ) :
-        RecyclerView.ViewHolder(view.root) {
+        RecyclerView.ViewHolder(viewBinding.root) {
 
-        fun onBind(item: AirlineWithFavoriteFlag) {
-            with(view) {
+        fun onBind(item: AirlineWithFavoriteFlagItem, position: Int) {
+            with(viewBinding) {
                 favoriteAirline = item
-
                 with(iconFavorite) {
-                    if (item.airline.id != null) {
-                        setOnClickListener {
-                            if ((it as CheckBox).isChecked) {
-                                addToFavoriteListener(item.airline.id)
-                            }
-                            else run {
-                                removeFromFavoriteListener(item.airline.id)
-                            }
+                    setOnClickListener {
+                        if ((it as CheckBox).isChecked) {
+                            //I filtered the list and remove items with id = null
+                            addToFavoriteListener(item.id!!, position)
+                        } else {
+                            removeFromFavoriteListener(item.id!!, position)
                         }
-                    } else {
-                        this.isEnabled = false
                     }
                 }
             }
         }
     }
 
-    private class UserDiffCallBack : DiffUtil.ItemCallback<AirlineWithFavoriteFlag>() {
+    private class UserDiffCallBack : DiffUtil.ItemCallback<AirlineWithFavoriteFlagItem>() {
         override fun areItemsTheSame(
-            oldItem: AirlineWithFavoriteFlag,
-            newItem: AirlineWithFavoriteFlag
+            oldItem: AirlineWithFavoriteFlagItem,
+            newItem: AirlineWithFavoriteFlagItem
         ): Boolean =
-            oldItem.airline.id == newItem.airline.id
+            oldItem.id == newItem.id
 
         override fun areContentsTheSame(
-            oldItem: AirlineWithFavoriteFlag,
-            newItem: AirlineWithFavoriteFlag
+            oldItem: AirlineWithFavoriteFlagItem,
+            newItem: AirlineWithFavoriteFlagItem
         ): Boolean =
             oldItem == newItem
     }
@@ -67,6 +62,6 @@ class AirlinesRecyclerViewListAdapter(
     }
 
     override fun onBindViewHolder(holder: AirlineViewHolder, position: Int) {
-        getItem(position).let { holder.onBind(it) }
+        getItem(position).let { holder.onBind(it, position) }
     }
 }

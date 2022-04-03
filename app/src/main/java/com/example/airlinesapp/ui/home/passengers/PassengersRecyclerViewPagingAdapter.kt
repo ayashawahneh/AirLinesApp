@@ -6,7 +6,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.airlinesapp.databinding.SinglePassengerViewBinding
-import com.example.airlinesapp.models.Passenger
+import com.example.airlinesapp.di.network.models.Passenger
 import com.chauthai.swipereveallayout.ViewBinderHelper
 
 class PassengersRecyclerViewPagingAdapter(

@@ -1,13 +1,14 @@
 package com.example.airlinesapp.di.modules
 
 import com.example.airlinesapp.ui.home.airlines.AirlinesFragment
-import com.example.airlinesapp.ui.home.airlines.addAirline.AddAirlineActivity
+import com.example.airlinesapp.ui.home.airlines.add.AddAirlineActivity
 import com.example.airlinesapp.ui.home.passengers.PassengersFragment
-import com.example.airlinesapp.ui.home.passengers.addPassenger.AddPassengerActivity
-import com.example.airlinesapp.ui.home.passengers.editPassenger.EditPassengerActivity
+import com.example.airlinesapp.ui.home.passengers.addedit.AddEditPassengerActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @Module
 abstract class BuildersModule {
 
@@ -21,8 +22,5 @@ abstract class BuildersModule {
     abstract fun contributeAddAirlineActivity(): AddAirlineActivity
 
     @ContributesAndroidInjector
-    abstract fun contributeAddPassengerActivity(): AddPassengerActivity
-
-    @ContributesAndroidInjector
-    abstract fun contributeEditPassengerActivity(): EditPassengerActivity
+    abstract fun contributeEditPassengerActivity(): AddEditPassengerActivity
 }

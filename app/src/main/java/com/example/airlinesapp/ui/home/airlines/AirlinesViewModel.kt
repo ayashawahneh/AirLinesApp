@@ -3,8 +3,8 @@ package com.example.airlinesapp.ui.home.airlines
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.airlinesapp.R
-import com.example.airlinesapp.di.network.Repository
-import com.example.airlinesapp.models.AirlineWithFavoriteFlag
+import com.example.airlinesapp.di.repo.Repository
+import com.example.airlinesapp.models.AirlineWithFavoriteFlagItem
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -13,36 +13,32 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 class AirlinesViewModel @Inject constructor(private val repository: Repository) :
     ViewModel() {
-    var isLoading = MutableLiveData<Boolean>()
+    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
+    private var searchString: String? = null
+    private var airlinesList: List<AirlineWithFavoriteFlagItem> = emptyList()
+    var favoriteAirlinesList = emptyList<String>()
         private set
-    val isVisibleStateTextView = MutableLiveData<Boolean>()
-    var networkState = MutableLiveData<Int>()
-    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
-    val airlinesLiveData = MutableLiveData<List<AirlineWithFavoriteFlag>>()
-    val favoriteAirlinesList = MutableLiveData<MutableList<String>>()
-    val searchText = MutableLiveData<String>()
-    private var searchedAirlinesList = MutableLiveData<List<AirlineWithFavoriteFlag>>()
-    val mappedSearchedText = searchText.switchMap { query ->
-        if (!query.isNullOrEmpty()) {
-            searchedAirlinesList.value = airlinesLiveData.value?.filter {
-                it.airline.name.contains(searchText.value.toString(), true)
-            }
-            if (searchedAirlinesList.value?.isEmpty()!!) {
-                networkState.value = R.string.EMPTY_SEARCH
-                isVisibleStateTextView.value = true
-            } else {
-                isVisibleStateTextView.value = false
-            }
-            searchedAirlinesList
 
-        } else {
-            isVisibleStateTextView.value = false
-            airlinesLiveData
-        }
-    }
+    private val _isLoadingLiveData = MutableLiveData<Boolean>()
+    val isLoadingLiveData: LiveData<Boolean> = _isLoadingLiveData
+
+    private val _isVisibleStateTextViewLiveData = MutableLiveData<Boolean>()
+    val isVisibleStateTextViewLiveData: LiveData<Boolean> = _isVisibleStateTextViewLiveData
+
+    private val _networkStateLiveData = MutableLiveData<Int>()
+    val networkStateLiveData: LiveData<Int> = _networkStateLiveData
+
+    private val _airlinesListLiveData = MutableLiveData<List<AirlineWithFavoriteFlagItem>>()
+    val airlinesListLiveData: LiveData<List<AirlineWithFavoriteFlagItem>> = _airlinesListLiveData
+
+    private val _isVisibleReloadLiveData = MutableLiveData<Boolean>()
+    val isVisibleReloadLiveData: LiveData<Boolean> = _isVisibleReloadLiveData
+
 
     init {
-        favoriteAirlinesList.value = repository.getFavoriteIdsFromDataStore()
+        val dataStoreFavoriteList = repository.getFavoriteIdsFromDataStore()
+        if (!dataStoreFavoriteList.isNullOrEmpty())
+            favoriteAirlinesList = dataStoreFavoriteList
         getAirlinesList()
     }
 
@@ -51,34 +47,74 @@ class AirlinesViewModel @Inject constructor(private val repository: Repository) 
         compositeDisposable.clear()
     }
 
-    fun updateAirlineIdsInDataStore() {
-        favoriteAirlinesList.value?.let {
-            repository.saveFavoriteIdsToDataStore(it)
+    fun saveIdInFavoriteAirlinesList(favoritesIdsList: MutableList<String>) {
+        favoriteAirlinesList = favoritesIdsList
+        repository.saveFavoriteIdsToDataStore(favoritesIdsList)
+    }
+
+    fun removeIdFromAirlinesFavoriteList(favoritesIdsList: MutableList<String>) {
+        favoriteAirlinesList = favoritesIdsList
+        repository.saveFavoriteIdsToDataStore(favoritesIdsList)
+
+    }
+
+    fun updateItemFavoriteFlagInTheCurrentList(position: Int, isFavoriteNewValue: Boolean) {
+        _airlinesListLiveData.value?.get(position)?.isFavorite = isFavoriteNewValue
+    }
+
+    fun search(query: String) {
+        searchString = query
+        _airlinesListLiveData.value = airlinesList.applySearch()
+        if (_airlinesListLiveData.value?.isEmpty()!!) {
+            _networkStateLiveData.value = R.string.EMPTY_SEARCH
+            _isVisibleStateTextViewLiveData.value = true
+        } else {
+            _isVisibleStateTextViewLiveData.value = false
+        }
+    }
+
+    fun refreshList() {
+        getAirlinesList()
+    }
+
+    private fun List<AirlineWithFavoriteFlagItem>.applySearch(): List<AirlineWithFavoriteFlagItem> {
+        return if (!searchString.isNullOrEmpty()) {
+            filter {
+                it.name.contains(searchString.toString(), true)
+            }
+        } else {
+            this
         }
     }
 
     private fun getAirlinesList() {
-        networkState.value = R.string.LOADING
-        isLoading.value = true
-        isVisibleStateTextView.value = true
+        _networkStateLiveData.value = R.string.LOADING
+        _isLoadingLiveData.value = true
+        _isVisibleStateTextViewLiveData.value = true
+        _isVisibleReloadLiveData.value = false
         compositeDisposable.add(
             repository.getAirlines()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
-                        this.airlinesLiveData.value = it
-                        isLoading.value = false
-                        isVisibleStateTextView.value = false
+                        it.let {
+                            this.airlinesList = it
+                            this._airlinesListLiveData.value = it
+                        }
+                        _isLoadingLiveData.value = false
+                        _isVisibleStateTextViewLiveData.value = false
                         if (it.isEmpty()) {
-                            networkState.value = R.string.EMPTY_LIST
-                            isVisibleStateTextView.value = true
+                            _networkStateLiveData.value = R.string.EMPTY_LIST
+                            _isVisibleStateTextViewLiveData.value = true
                         }
                     },
                     {
                         Log.e("AirlinesViewModel", it.message.toString())
-                        isLoading.value = false
-                        isVisibleStateTextView.value = true
-                        networkState.value = R.string.CHECK_NETWORK_ERROR
+                        _isLoadingLiveData.value = false
+                        _isVisibleStateTextViewLiveData.value = true
+                        _networkStateLiveData.value = R.string.CHECK_NETWORK_ERROR
+                        _isVisibleReloadLiveData.value = true
+
                     }
                 )
         )

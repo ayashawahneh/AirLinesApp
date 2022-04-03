@@ -6,7 +6,7 @@
 
         <variable
             name="favoriteAirline"
-            type="com.example.airlinesapp.models.AirlineWithFavoriteFlag" />
+            type="com.example.airlinesapp.models.AirlineWithFavoriteFlagItem" />
 
     </data>
 
@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:contentDescription="@string/airline_image"
-                android:loadImage="@{favoriteAirline.airline.logo}"
+                android:loadImage="@{favoriteAirline.logo}"
                 android:padding="8dp"
                 android:scaleType="centerInside" />
 
@@ -44,7 +44,7 @@
                     android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{favoriteAirline.airline.name}"
+                    android:text="@{favoriteAirline.name}"
                     android:textAppearance="?attr/textAppearanceHeadline6" />
 
                 <TextView
@@ -52,7 +52,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@{favoriteAirline.airline.country}"
+                    android:text="@{favoriteAirline.country}"
                     android:textAppearance="?attr/textAppearanceBody2"
                     android:textColor="?android:attr/textColorSecondary" />
 

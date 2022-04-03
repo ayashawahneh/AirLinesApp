@@ -1,15 +1,17 @@
-package com.example.airlinesapp.di.network
+package com.example.airlinesapp.di.repo
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.rxjava2.observable
-import com.example.airlinesapp.models.AirLine
-import com.example.airlinesapp.models.AirlineWithFavoriteFlag
-import com.example.airlinesapp.models.Passenger
-import com.example.airlinesapp.models.PassengerPost
-import com.example.airlinesapp.ui.home.airlines.DataStoreManager
+import com.example.airlinesapp.di.network.ApiService
+import com.example.airlinesapp.di.network.models.AirLine
+import com.example.airlinesapp.models.AirlineWithFavoriteFlagItem
+import com.example.airlinesapp.di.network.models.Passenger
+import com.example.airlinesapp.di.network.models.PassengerPost
+import com.example.airlinesapp.di.dataStore.DataStoreManager
 import com.example.airlinesapp.ui.home.passengers.PassengersDataSource
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -36,24 +38,34 @@ class Repository @Inject constructor(
     }
 
     @SuppressLint("CheckResult")
-    fun getAirlines(): Single<List<AirlineWithFavoriteFlag>> {
+    fun getAirlines(): Single<List<AirlineWithFavoriteFlagItem>> {
         val result = apiService.getAirlines().toObservable()
-            .zipWith(dataStoreManager.getFavouriteIds()) { airlineList, favoriteIdsList ->
-
-                val favorites = mutableListOf<AirlineWithFavoriteFlag>()
-                if (favoriteIdsList.isEmpty()) {
-                    for (item in airlineList)
-                        favorites.add(AirlineWithFavoriteFlag(item, false))
+            .zipWith(dataStoreManager.getFavouriteIds()) { airlineList, favoriteIdsListFromDataStore ->
+                Log.d("dddd", "in")
+                val favoriteAirlinesList = mutableListOf<AirlineWithFavoriteFlagItem>()
+                if (favoriteIdsListFromDataStore.isEmpty()) {
+                    for (airlineItem in airlineList) {
+                        if (!airlineItem.id.isNullOrEmpty())
+                            favoriteAirlinesList.add(
+                                AirlineWithFavoriteFlagItem.create(airlineItem, false)
+                            )
+                    }
                 } else {
-                    for (item in airlineList) {
-                        if (item.id in favoriteIdsList) {
-                            favorites.add(AirlineWithFavoriteFlag(item, true))
-                        } else {
-                            favorites.add(AirlineWithFavoriteFlag(item, false))
+                    for (airlineItem in airlineList) {
+                        if (!airlineItem.id.isNullOrEmpty()) {
+                            if (airlineItem.id in favoriteIdsListFromDataStore) {
+                                favoriteAirlinesList.add(
+                                    AirlineWithFavoriteFlagItem.create(airlineItem, true)
+                                )
+                            } else {
+                                favoriteAirlinesList.add(
+                                    AirlineWithFavoriteFlagItem.create(airlineItem, false)
+                                )
+                            }
                         }
                     }
                 }
-                return@zipWith favorites.toList()
+                return@zipWith favoriteAirlinesList.toList()
             }
         return SingleDelayWithObservable.fromObservable(result)
             .subscribeOn(Schedulers.io())

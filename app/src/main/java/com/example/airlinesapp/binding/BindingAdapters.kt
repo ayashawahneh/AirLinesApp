@@ -1,5 +1,6 @@
 package com.example.airlinesapp.binding
 
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -18,4 +19,9 @@ fun loadImage(imageView: ImageView, url: String?) {
 @BindingAdapter("android:setText")
 fun setText(textView: TextView, stringId: Int) {
     textView.setText(stringId)
+}
+
+@BindingAdapter("visibleGone")
+fun showHide(view: View, show: Boolean) {
+    view.visibility = if (show) View.VISIBLE else View.GONE
 }

@@ -1,4 +1,4 @@
-package com.example.airlinesapp.models
+package com.example.airlinesapp.di.network.models
 
 import com.google.gson.annotations.SerializedName
 import java.math.BigInteger

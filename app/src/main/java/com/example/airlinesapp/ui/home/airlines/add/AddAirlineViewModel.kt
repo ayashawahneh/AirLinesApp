@@ -1,12 +1,13 @@
-package com.example.airlinesapp.ui.home.airlines.addAirline
+package com.example.airlinesapp.ui.home.airlines.add
 
 import android.util.Log
 import android.util.Patterns
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.airlinesapp.R
-import com.example.airlinesapp.di.network.Repository
-import com.example.airlinesapp.models.AirLine
+import com.example.airlinesapp.di.repo.Repository
+import com.example.airlinesapp.di.network.models.AirLine
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,36 +17,65 @@ import javax.inject.Inject
 class AddAirlineViewModel
 @Inject constructor(private val repository: Repository) :
     ViewModel() {
-    val name = MutableLiveData<String>()
-    val country = MutableLiveData<String>()
-    val headQuarter = MutableLiveData<String>()
-    val slogan = MutableLiveData<String>()
-    val website = MutableLiveData<String>()
-    val established = MutableLiveData<String>()
-    val enableSubmitButton = MutableLiveData(false)
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
-    val isSent = MutableLiveData<Boolean>()
+    var name = String()
+        private set
+    private var country = String()
+    private var headQuarter = String()
+    private var slogan = String()
+    private var website = String()
+    private var established = String()
+
+    private val _enableSubmitButtonLiveData = MutableLiveData(false)
+    val enableSubmitButtonLiveData: LiveData<Boolean> = _enableSubmitButtonLiveData
+
+    private val _isSentLiveData = MutableLiveData<Boolean>()
+    val isSentLiveData: LiveData<Boolean> = _isSentLiveData
 
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.clear()
     }
 
+    fun setName(name: String) {
+        this.name = name
+    }
+
+    fun setCountry(country: String) {
+        this.country = country
+    }
+
+    fun setHeadQuarter(headQuarter: String) {
+        this.headQuarter = headQuarter
+    }
+
+    fun setSlogan(slogan: String) {
+        this.slogan = slogan
+    }
+
+    fun setEstablished(established: String) {
+        this.established = established
+    }
+
+    fun setWebsite(website: String) {
+        this.website = website
+    }
+
     fun setEnableSubmitButton() {
-        enableSubmitButton.value = (
-                validateRequiredFields(name.value) == null
-                        && validateRequiredFields(country.value) == null
-                        && validateRequiredFields(headQuarter.value) == null
+        _enableSubmitButtonLiveData.value = (
+                validateRequiredFields(name) == null
+                        && validateRequiredFields(country) == null
+                        && validateRequiredFields(headQuarter) == null
                         && validateSlogan() == null
                         && validateWebsite() == null
                 )
     }
 
     fun validateSlogan(): Int? {
-        return if (slogan.value.isNullOrEmpty()) {
+        return if (slogan.isEmpty()) {
             null
         } else {
-            if (slogan.value.toString().length < 3) {
+            if (slogan.length < 3) {
                 R.string.too_short
             } else {
                 null
@@ -54,10 +84,10 @@ class AddAirlineViewModel
     }
 
     fun validateWebsite(): Int? {
-        return if (website.value.isNullOrEmpty()) {
+        return if (website.isEmpty()) {
             null
         } else {
-            if (!(Patterns.WEB_URL.matcher(website.value!!).matches())) {
+            if (!(Patterns.WEB_URL.matcher(website).matches())) {
                 R.string.invalid_website
             } else {
                 null
@@ -79,12 +109,12 @@ class AddAirlineViewModel
 
     fun addAirline() {
         val airlineData = AirLine(
-            country = country.value!!,
-            established = established.value,
-            slogan = slogan.value,
-            name = name.value!!,
-            headQuaters = headQuarter.value!!,
-            website = website.value,
+            country = country,
+            established = established,
+            slogan = slogan,
+            name = name,
+            headQuaters = headQuarter,
+            website = website,
         )
 
         compositeDisposable
@@ -94,11 +124,11 @@ class AddAirlineViewModel
                     .subscribe(
                         {
                             Log.d("addNewAir", it.name)
-                            isSent.value = true
+                            _isSentLiveData.value = true
                         },
                         {
                             Log.d("addNewAir", it.message.toString())
-                            isSent.value = false
+                            _isSentLiveData.value = false
                         }
                     )
             )

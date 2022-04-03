@@ -1,32 +1,57 @@
 package com.example.airlinesapp.ui.home.passengers
 
-import android.util.Log
+import android.view.MenuItem
 import androidx.lifecycle.*
 import androidx.paging.PagingData
-import com.example.airlinesapp.R
-import com.example.airlinesapp.models.Passenger
-import io.reactivex.disposables.CompositeDisposable
-import javax.inject.Inject
-import com.example.airlinesapp.di.network.Repository
+import androidx.paging.rxjava2.cachedIn
+import com.example.airlinesapp.di.network.models.Passenger
+import com.example.airlinesapp.di.repo.Repository
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 class PassengersViewModel @Inject constructor(private val repository: Repository) :
     ViewModel() {
-    var isLoading = MutableLiveData<Boolean>()
-    var networkState = MutableLiveData<Int>()
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-    val passengersList = MutableLiveData<PagingData<Passenger>>()
-    val isDeleted = MutableLiveData<Boolean>()
-    val searchText = MutableLiveData("")
-    val isVisibleStateTextView = MutableLiveData<Boolean>()
+
+    private val _passengersListLiveData = MutableLiveData<PagingData<Passenger>>()
+    val passengersListLiveData: LiveData<PagingData<Passenger>> = _passengersListLiveData
+
+    private val _isDeletedLiveData = MutableLiveData<Boolean>()
+    val isDeletedLiveData: LiveData<Boolean> = _isDeletedLiveData
+
+    private val _searchTextLiveData = MutableLiveData("")
+    val searchTextLiveData: LiveData<String> = _searchTextLiveData
+
+    private var _searchItemLiveData = MutableLiveData<MenuItem>()
+    val searchItemLiveData: LiveData<MenuItem> = _searchItemLiveData
 
     init {
         getPassengers()
+
+//        val data = Transformations.switchMap(_passengersListLiveData) {
+//            val d = it.filter { pas ->
+//                Log.d("testy", pas.name.toString())
+//                pas.name!!.contains("aya", true)
+//            }
+//            return@switchMap MutableLiveData(d)
+//        }.cachedIn(viewModelScope)
+
     }
 
-    fun search() {
+    fun setSearchItem(searchItem: MenuItem) {
+        _searchItemLiveData.value = searchItem
+
+    }
+
+    fun search(query: String) {
+        _searchTextLiveData.value = query
+        getPassengers()
+    }
+
+    fun refresh() {
         getPassengers()
     }
 
@@ -37,34 +62,25 @@ class PassengersViewModel @Inject constructor(private val repository: Repository
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {
-                            Log.d("DeletePas", it.toString())
-                            isDeleted.value = true
+                            _isDeletedLiveData.value = true
                         },
                         {
-                            Log.d("ErrorPas", it.toString())
-                            isDeleted.value = false
+                            _isDeletedLiveData.value = false
                         }
                     )
             )
     }
 
     private fun getPassengers() {
-        networkState.value = R.string.LOADING
-        isLoading.value = true
-        isVisibleStateTextView.value = true
         compositeDisposable.add(
-            repository.getPassengers(searchText.value!!)
+            repository.getPassengers(_searchTextLiveData.value!!)
                 .observeOn(AndroidSchedulers.mainThread())
+                .cachedIn(viewModelScope)
                 .subscribe(
                     {
-                        passengersList.value = it
-                        isLoading.value = false
-                        isVisibleStateTextView.value = false
+                        _passengersListLiveData.value = it
                     },
                     {
-                        networkState.value = R.string.CHECK_NETWORK_ERROR
-                        isVisibleStateTextView.value = true
-                        isLoading.value = false
                     }
                 )
         )

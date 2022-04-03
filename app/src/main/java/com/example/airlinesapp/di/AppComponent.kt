@@ -11,8 +11,10 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Singleton
 
+@ExperimentalCoroutinesApi
 @Singleton
 @Component(
     modules = [
@@ -24,7 +26,7 @@ import javax.inject.Singleton
         RetrofitModule::class
     ]
 )
-interface AppComponent: AndroidInjector<MyApplication> {
+interface AppComponent : AndroidInjector<MyApplication> {
     override fun inject(application: MyApplication)
 
     @Component.Builder

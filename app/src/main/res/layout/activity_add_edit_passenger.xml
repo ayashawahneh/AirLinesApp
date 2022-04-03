@@ -9,7 +9,7 @@
 
         <variable
             name="model"
-            type="com.example.airlinesapp.ui.home.passengers.editPassenger.EditPassengerViewModel" />
+            type="com.example.airlinesapp.ui.home.passengers.addedit.AddEditPassengerViewModel" />
     </data>
 
     <ScrollView
@@ -19,7 +19,7 @@
         android:fitsSystemWindows="true"
         android:orientation="vertical"
         android:padding="@dimen/page_padding"
-        tools:context=".ui.home.passengers.editPassenger.EditPassengerActivity">
+        tools:context=".ui.home.passengers.addedit.AddEditPassengerActivity">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,7 +34,7 @@
                 android:layout_marginBottom="@dimen/box_margin_bottom"
                 android:hint="@string/passenger_name"
                 app:counterEnabled="true"
-                app:counterMaxLength="12"
+                app:counterMaxLength="24"
                 app:helperText="Required"
                 app:helperTextTextColor="@color/design_default_color_error">
 
@@ -43,8 +43,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/text_field_height"
                     android:lines="1"
-                    android:maxLength="12"
-                    android:text="@={model.passengerName}" />
+                    android:maxLength="24"
+                    android:text="@{model.passengerName}"/>
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -62,7 +62,7 @@
                     android:layout_height="@dimen/text_field_height"
                     android:inputType="numberDecimal"
                     android:maxLength="4"
-                    android:text="@={model.trips}" />
+                    android:text="@{model.trips}"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -81,7 +81,7 @@
                     android:layout_height="@dimen/text_field_height"
                     android:focusableInTouchMode="false"
                     android:inputType="none"
-                    android:text="@={model.airlineName}" />
+                    android:text="@{model.airlineItem.name}"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <ProgressBar
@@ -92,15 +92,15 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="3dp"
                 android:indeterminateTint="@color/primary"
-                android:visibility="@{model.isLoading ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{model.isLoadingLiveData ? View.VISIBLE : View.GONE}" />
 
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:setText="@{model.networkState}"
-                android:visibility="@{model.isVisibleStateTextView ? View.VISIBLE : View.GONE}" />
+                android:setText="@{model.networkStateLiveData}"
+                android:visibility="@{model.isVisibleStateTextViewLiveData ? View.VISIBLE : View.GONE}" />
 
             <Space
                 android:layout_width="match_parent"
@@ -113,7 +113,7 @@
                 android:layout_height="@dimen/text_field_height"
                 android:layout_weight="0"
                 android:backgroundTint="@color/secondary"
-                android:enabled="@{model.enableSubmitButton}"
+                android:enabled="@{model.enableSubmitButtonLiveData}"
                 android:text="@string/submit"
                 android:textAllCaps="false" />
 

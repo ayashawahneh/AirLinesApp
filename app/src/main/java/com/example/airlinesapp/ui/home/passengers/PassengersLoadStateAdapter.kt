@@ -13,8 +13,7 @@ class PassengersLoadStateAdapter :
 
     class PassengerLoadStateViewHolder(
         private val binding: NetworkStateItemBinding,
-
-        ) : RecyclerView.ViewHolder(binding.root) {
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(loadState: LoadState) {
             if (loadState is LoadState.Loading) {

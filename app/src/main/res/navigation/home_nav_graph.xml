@@ -14,10 +14,4 @@
         android:name="com.example.airlinesapp.ui.home.passengers.PassengersFragment"
         android:label="fragment_passengers"
         tools:layout="@layout/fragment_passengers" />
-    <action
-        android:id="@+id/action_global_passengersFragment"
-        app:destination="@id/passengersFragment" />
-    <action
-        android:id="@+id/action_global_airlinesFragment"
-        app:destination="@id/airlinesFragment" />
 </navigation>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -12,6 +13,7 @@
     </data>
 
     <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="ui.home.airlines.AirlinesFragment">
@@ -31,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:indeterminateTint="@color/primary"
-            android:visibility="@{model.isLoading ? View.VISIBLE : View.GONE}" />
+            android:visibility="@{model.isLoadingLiveData ? View.VISIBLE : View.GONE}" />
 
         <TextView
             android:id="@+id/textView"
@@ -39,9 +41,26 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="40dp"
-            android:setText="@{model.networkState}"
+            android:setText="@{model.networkStateLiveData}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-            android:visibility="@{model.isVisibleStateTextView ? View.VISIBLE : View.GONE}" />
+            android:visibility="@{model.isVisibleStateTextViewLiveData ? View.VISIBLE : View.GONE}" />
+        <ImageView
+            android:id="@+id/reloadButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_refresh"
+            android:visibility="@{model.isVisibleReloadLiveData ? View.VISIBLE : View.GONE}" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floating_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:contentDescription="@string/add_new_item"
+            app:srcCompat="@drawable/ic_add"
+            app:tint="@android:color/white" />
     </FrameLayout>
 </layout>

@@ -1,9 +1,9 @@
 package com.example.airlinesapp.di.network
 
-import com.example.airlinesapp.models.AirLine
-import com.example.airlinesapp.models.Passenger
-import com.example.airlinesapp.models.PassengerPost
-import com.example.airlinesapp.models.PassengersResponse
+import com.example.airlinesapp.di.network.models.AirLine
+import com.example.airlinesapp.di.network.models.Passenger
+import com.example.airlinesapp.di.network.models.PassengerPost
+import com.example.airlinesapp.di.network.models.PassengersResponse
 import io.reactivex.Single
 import retrofit2.http.*
 

@@ -1,4 +1,4 @@
-package com.example.airlinesapp.models
+package com.example.airlinesapp.di.network.models
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
